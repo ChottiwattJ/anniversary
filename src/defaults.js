@@ -113,6 +113,15 @@ export const DEFAULT_CONTENT = {
     subtitle: "หน้านี้ทำไว้ให้ จจ คนเดียว ค่อยๆ เลื่อนดูนะ",
   },
 
+  // Labels on the full page (opening and clocks). {n} {km} {h} are filled in.
+  // dateLang: "en" or "th" for the day names under the clocks.
+  labels: {
+    days: "Together for {n} days",
+    distance: "{km} km",
+    diff: "{h} hours apart",
+    dateLang: "en",
+  },
+
   // Set as YYYY-MM-DD to show "together N days". Leave empty to hide.
   togetherSince: "2024-10-28",
 

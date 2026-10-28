@@ -459,6 +459,10 @@ footer { margin-top: 80px; color: var(--muted); font-size: 0.82rem; display: fle
   }
   const hoursApart = () => offsetHours(TZ_HERE) - offsetHours(TZ_THERE);
   const thaiDay = (tz) => new Intl.DateTimeFormat("th-TH", { timeZone: tz, weekday: "long", day: "numeric", month: "short" }).format(new Date());
+  const L = () => C.labels || {};
+  const fill = (tpl, vals) => String(tpl || "").replace(/\{(\w+)\}/g, (_, k) => (k in vals ? vals[k] : ""));
+  const pageLocale = () => (L().dateLang === "th" ? "th-TH" : "en-US");
+  const pageDay = (tz) => new Intl.DateTimeFormat(pageLocale(), { timeZone: tz, weekday: L().dateLang === "th" ? "long" : "short", day: "numeric", month: "short" }).format(new Date());
   const thaiDate = (iso) => new Intl.DateTimeFormat("th-TH", { day: "numeric", month: "long", year: "numeric" }).format(new Date(iso + "T00:00:00"));
   const todayHere = () => partsIn(TZ_HERE).date;
   const statusNow = () => {
@@ -1014,7 +1018,7 @@ footer { margin-top: 80px; color: var(--muted); font-size: 0.82rem; display: fle
       let days = "";
       if (C.togetherSince && /^\d{4}-\d{2}-\d{2}$/.test(C.togetherSince)) {
         const n = Math.floor((Date.parse(todayHere()) - Date.parse(C.togetherSince)) / 864e5);
-        if (n >= 0) days = `<p class="days">อยู่ด้วยกันมาแล้ว ${n.toLocaleString("th-TH")} วัน</p>`;
+        if (n >= 0) days = `<p class="days">${inline(fill(L().days || "อยู่ด้วยกันมาแล้ว {n} วัน", { n: n.toLocaleString(pageLocale()) }))}</p>`;
       }
       s.push(`<section class="hero">
         <svg class="leaf" aria-hidden="true"><use href="#leaf"/></svg>
@@ -1147,9 +1151,10 @@ footer { margin-top: 80px; color: var(--muted); font-size: 0.82rem; display: fle
       const h = partsIn(TZ_HERE), t = partsIn(TZ_THERE);
       $("#t-here").textContent = h.hm;
       $("#t-there").textContent = t.hm;
-      $("#d-here").textContent = thaiDay(TZ_HERE);
-      $("#d-there").textContent = thaiDay(TZ_THERE);
-      $("#t-span").innerHTML = `${Number(C.clocks.distanceKm || 0).toLocaleString("th-TH")} กม.<br>ต่างกัน ${hoursApart()} ชม.`;
+      $("#d-here").textContent = pageDay(TZ_HERE);
+      $("#d-there").textContent = pageDay(TZ_THERE);
+      const km = Number(C.clocks.distanceKm || 0).toLocaleString(pageLocale());
+      $("#t-span").innerHTML = `${inline(fill(L().distance || "{km} กม.", { km }))}<br>${inline(fill(L().diff || "ต่างกัน {h} ชม.", { h: hoursApart() }))}`;
       $("#t-status").innerHTML = inline(statusNow());
     };
     tick();
