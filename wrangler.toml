@@ -13,7 +13,7 @@ run_worker_first = ["/api/*"]
 
 [[kv_namespaces]]
 binding = "KV"
-id = "PASTE_KV_ID_HERE"
+id = "6139d4bc96fb45e4b7bba738d0caee8c"
 
 [[r2_buckets]]
 binding = "MEDIA"
