@@ -1111,8 +1111,8 @@ footer { margin-top: 80px; color: var(--muted); font-size: 0.82rem; display: fle
     const chatOn = C.chat && C.chat.show !== false && (C.chat.nodes || []).length;
     $("#site").innerHTML = `
       ${storyOn || chatOn ? `<div class="replay row">
-        ${chatOn ? `<button class="btn ghost" type="button" id="replay-chat">เล่นแชทอีกครั้ง</button>` : ""}
-        ${storyOn ? `<button class="btn ghost" type="button" id="replay-story">ดูเรื่องราวอีกครั้ง</button>` : ""}
+        ${chatOn ? `<button class="btn ghost" type="button" id="replay-chat">${esc(L().replayChat || "Play the chat again")}</button>` : ""}
+        ${storyOn ? `<button class="btn ghost" type="button" id="replay-story">${esc(L().replayStory || "Watch our story again")}</button>` : ""}
       </div>` : ""}
       <main>${s.join("")}</main>
       <footer><svg class="leaf" aria-hidden="true"><use href="#leaf"/></svg><span>${esc(C.me || "")} ทำให้ ${esc(her.short || her.name || "")}</span></footer>`;
