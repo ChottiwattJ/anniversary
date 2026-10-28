@@ -272,9 +272,17 @@ progress { width: 100%; }
     const res = await fetch(path, { ...opts, headers: { authorization: `Bearer ${TOKEN}`, ...(opts.headers || {}) } });
     if (res.status === 401) { showLogin("Token rejected."); throw new Error("unauthorized"); }
     const ct = res.headers.get("content-type") || "";
-    const data = ct.includes("json") ? await res.json() : res;
-    if (!res.ok) throw new Error((data && data.error) || res.status);
-    return data;
+    if (ct.includes("json")) {
+      const data = await res.json();
+      if (!res.ok) throw new Error((data && data.error) || res.status);
+      return data;
+    }
+    if (!res.ok) throw new Error(String(res.status));
+    if ((opts.expect || "json") === "json") {
+      const text = (await res.text()).slice(0, 60);
+      throw new Error(`the site's server code isn't running (it answered "${text}"). Check the Worker deployment in Cloudflare.`);
+    }
+    return res;
   }
   function markDirty() { dirty = true; status("Unsaved changes", ""); }
   function status(msg, cls) { const s = $("#save-status"); s.textContent = msg; s.className = `small ${cls || "muted"}`; }
