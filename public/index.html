@@ -1,0 +1,1271 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<!--PREVIEW-HEAD-START-->
+<title>สำหรับ จจ</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Trirong:ital,wght@0,300;0,400;0,500;1,300&family=IBM+Plex+Sans+Thai:wght@300;400;500&display=swap">
+<style>
+/* Layout: a white page told one scene at a time, then kept as one quiet column. Single warm-white theme by choice. */
+:root {
+  --paper: #FFFFFF;
+  --wash: #FBF7F1;
+  --ink: #2F2722;
+  --muted: #8A7E73;
+  --line: #EFE8DE;
+  --accent: #B07A38;
+  --accent-ink: #8E5F25;
+  --accent-soft: #F7EEE1;
+  --bubble: #F4EFE8;
+  --todo: #FFF3CF;
+  --serif: "Trirong", "Noto Serif Thai", Georgia, serif;
+  --sans: "IBM Plex Sans Thai", "Noto Sans Thai", system-ui, sans-serif;
+  --step-1: 1.15rem;
+  --step-2: 1.45rem;
+  --step-3: clamp(2rem, 7vw, 2.8rem);
+  --radius: 14px;
+  color-scheme: light;
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-weight: 300;
+  font-size: 16px;
+  line-height: 1.8;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+img { max-width: 100%; display: block; }
+button, input, textarea { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 6px; }
+[hidden] { display: none !important; }
+h1, h2 { font-family: var(--serif); font-weight: 400; text-wrap: balance; margin: 0; line-height: 1.35; }
+h1 { font-size: var(--step-3); font-weight: 300; }
+h2 { font-size: var(--step-2); }
+p { margin: 0; }
+.eyebrow { color: var(--accent-ink); font-size: 0.9rem; font-weight: 400; }
+.muted { color: var(--muted); }
+.small { font-size: 0.9rem; }
+mark.todo { background: var(--todo); color: inherit; padding: 0 3px; border-radius: 3px; }
+.leaf { width: 22px; height: 22px; color: var(--accent); flex: none; }
+
+.btn {
+  appearance: none; border: 1px solid var(--accent-ink); background: var(--accent-ink); color: #fff;
+  border-radius: 999px; padding: 10px 24px; font-weight: 400; cursor: pointer; justify-self: start;
+  transition: opacity .2s, transform .2s; text-decoration: none; display: inline-block;
+}
+.btn:hover { opacity: .92; }
+.btn:active { transform: translateY(1px); }
+.btn.ghost { background: transparent; color: var(--accent-ink); }
+.btn:disabled { opacity: .5; cursor: default; }
+.input {
+  width: 100%; border: 1px solid var(--line); background: var(--paper); border-radius: 12px;
+  padding: 12px 14px; font-size: 1.05rem; transition: border-color .2s;
+}
+.input:focus { outline: none; border-color: var(--accent); }
+textarea.input { min-height: 120px; resize: vertical; line-height: 1.7; }
+.row { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 16px; }
+.err { color: var(--accent-ink); font-size: 0.92rem; min-height: 1.6em; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .shake { animation: shake .35s; }
+  @keyframes shake { 25% { transform: translateX(-5px) } 75% { transform: translateX(5px) } }
+  .rise > * { animation: rise .7s cubic-bezier(.2,.7,.2,1) both; animation-delay: calc(var(--i, 0) * 140ms); }
+  @keyframes rise { from { opacity: .001; transform: translateY(10px) } to { opacity: 1; transform: none } }
+  .pop { animation: pop .35s cubic-bezier(.2,.7,.2,1) both; }
+  @keyframes pop { from { opacity: .001; transform: translateY(6px) scale(.98) } to { opacity: 1; transform: none } }
+}
+
+/* ---------- gate ---------- */
+.gate { display: grid; place-items: center; padding-block: 18vh 40px; }
+.gate-box { width: 100%; max-width: 360px; display: grid; gap: 22px; }
+.gate-box h1 { font-size: var(--step-2); font-weight: 400; }
+.field { display: grid; gap: 8px; }
+.field label { font-size: 0.92rem; color: var(--muted); }
+
+/* ---------- story stage ---------- */
+.stage {
+  position: fixed; inset: 0; z-index: 20;
+  background: radial-gradient(130% 55% at 50% 0%, var(--wash) 0%, var(--paper) 70%);
+  display: grid; grid-template-rows: auto minmax(0, 1fr) auto; gap: 10px;
+  padding: calc(env(safe-area-inset-top, 0px) + 14px) max(20px, env(safe-area-inset-right, 0px)) calc(env(safe-area-inset-bottom, 0px) + 16px) max(20px, env(safe-area-inset-left, 0px));
+  -webkit-tap-highlight-color: transparent; user-select: none; -webkit-user-select: none;
+}
+.stage-top { display: grid; gap: 10px; max-width: 560px; width: 100%; margin: 0 auto; }
+.bars { display: flex; gap: 4px; }
+.bars span { flex: 1; height: 2px; border-radius: 2px; background: var(--line); transition: background .3s; }
+.bars span.on { background: var(--accent); }
+.stage-nav { display: flex; justify-content: space-between; align-items: center; min-height: 32px; }
+.icon-btn { background: none; border: 0; color: var(--muted); cursor: pointer; padding: 4px 8px; font-size: 0.85rem; display: flex; align-items: center; gap: 4px; border-radius: 8px; }
+.icon-btn svg { width: 18px; height: 18px; }
+.stage-body { display: grid; place-items: center; min-height: 0; }
+.scene { width: 100%; max-width: 520px; max-height: 100%; overflow-y: auto; display: grid; gap: 18px; align-content: center; padding-block: 8px; overscroll-behavior: contain; }
+.scene.full { height: 100%; align-content: stretch; }
+.tap-hint { text-align: center; color: var(--muted); font-size: 0.82rem; min-height: 1.4em; }
+@media (prefers-reduced-motion: no-preference) { .tap-hint:not(:empty) { animation: breathe 2.4s ease-in-out infinite; } @keyframes breathe { 50% { opacity: .45 } } }
+
+.chapter { color: var(--muted); font-size: 0.85rem; }
+.big-title { font-family: var(--serif); font-size: clamp(1.8rem, 7vw, 2.4rem); font-weight: 300; line-height: 1.35; text-wrap: balance; }
+.lead { font-size: var(--step-1); color: var(--muted); }
+.moment-photo { width: 100%; aspect-ratio: 4 / 5; max-height: 46vh; object-fit: cover; border-radius: 12px; background: var(--accent-soft); }
+
+/* distance */
+.dist { display: grid; grid-template-columns: 1fr auto 1fr; align-items: end; gap: 10px; }
+.dist .place { font-size: 0.85rem; color: var(--muted); }
+.dist .time { font-family: var(--serif); font-size: clamp(2.2rem, 10vw, 3rem); font-weight: 300; line-height: 1.05; font-variant-numeric: tabular-nums; }
+.dist .r { text-align: right; }
+.dist svg { width: 70px; height: 24px; color: var(--accent); margin-bottom: 12px; }
+.dist path { stroke-dasharray: 80; stroke-dashoffset: 0; }
+@media (prefers-reduced-motion: no-preference) { .dist path { animation: draw 1.6s .4s ease both; } @keyframes draw { from { stroke-dashoffset: 80 } } }
+.facts { font-size: 0.95rem; color: var(--muted); }
+.status-line { font-size: 1rem; }
+
+/* quiz */
+.choices { display: grid; gap: 10px; }
+.choice {
+  text-align: left; background: var(--paper); border: 1px solid var(--line); border-radius: 12px;
+  padding: 12px 16px; cursor: pointer; font-size: 1.02rem; transition: border-color .2s, background .2s, opacity .2s;
+}
+.choice:hover { border-color: var(--accent); }
+.choice.right { border-color: var(--accent); background: var(--accent-soft); }
+.choice.wrong { opacity: .45; text-decoration: line-through; text-decoration-color: var(--muted); }
+.feedback { min-height: 1.8em; }
+
+/* envelope */
+.envelope {
+  justify-self: center; width: min(300px, 86%); aspect-ratio: 3 / 2; position: relative; cursor: pointer;
+  background: var(--wash); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; padding: 0;
+  transition: transform .5s, opacity .5s; box-shadow: 0 10px 30px rgb(80 50 20 / .07);
+}
+.envelope::before { content: ""; position: absolute; inset: 0 0 auto 0; height: 62%; background: #F3E8D9; clip-path: polygon(0 0, 100% 0, 50% 100%); }
+.envelope .seal { position: absolute; left: 50%; top: 62%; transform: translate(-50%, -50%); width: 44px; height: 44px; border-radius: 50%; background: var(--accent); display: grid; place-items: center; color: #fff; }
+.envelope .seal svg { width: 20px; height: 20px; }
+.envelope.open { transform: scale(.92) translateY(8px); opacity: 0; }
+@media (prefers-reduced-motion: no-preference) { .envelope:not(.open) { animation: nudge 3s ease-in-out 1s infinite; } @keyframes nudge { 0%, 88%, 100% { transform: none } 92% { transform: rotate(-2deg) } 96% { transform: rotate(2deg) } } }
+.letter-paper { background: var(--paper); border: 1px solid var(--line); border-radius: 12px; padding: 22px 22px 26px; display: grid; gap: 1em; box-shadow: 0 10px 30px rgb(80 50 20 / .06); }
+.letter-paper .body { font-family: var(--serif); font-size: 1.08rem; line-height: 2; display: grid; gap: 1em; }
+.signoff { font-family: var(--serif); font-style: italic; color: var(--muted); white-space: pre-line; }
+
+/* ticket */
+.ticket-wrap { position: relative; border-radius: var(--radius); }
+.ticket { background: var(--paper); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; }
+.ticket-top { padding: 22px 22px; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 10px; }
+.ticket .code { font-family: var(--serif); font-size: 2.2rem; font-weight: 400; line-height: 1; letter-spacing: 0.04em; }
+.ticket .city { font-size: 0.85rem; color: var(--muted); }
+.ticket .to { text-align: right; }
+.ticket .plane { color: var(--accent); width: 26px; height: 26px; }
+.ticket-bottom { border-top: 1px dashed var(--line); padding: 14px 22px; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 6px 20px; font-size: 0.9rem; }
+.ticket-bottom b { font-weight: 400; color: var(--accent-ink); }
+.cover {
+  position: absolute; inset: 0; border-radius: var(--radius); cursor: pointer; border: 1px dashed var(--accent);
+  background: repeating-linear-gradient(135deg, var(--accent-soft) 0 12px, var(--wash) 12px 24px);
+  display: grid; place-items: center; color: var(--accent-ink); font-weight: 400; transition: transform .7s cubic-bezier(.6,0,.3,1), opacity .7s;
+}
+.cover.gone { transform: translateY(-115%); opacity: 0; pointer-events: none; }
+.stops { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.stops li { display: grid; grid-template-columns: 10px 1fr; gap: 12px; align-items: baseline; }
+.stops li::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); transform: translateY(-2px); }
+.stops .s-name { font-weight: 400; }
+
+/* chat game */
+.chat { height: 100%; min-height: 0; display: grid; grid-template-rows: auto minmax(0, 1fr) auto; background: var(--paper); border: 1px solid var(--line); border-radius: 18px; overflow: hidden; }
+.chat-head { display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-bottom: 1px solid var(--line); background: var(--wash); }
+.avatar { width: 34px; height: 34px; border-radius: 50%; background: var(--accent); color: #fff; display: grid; place-items: center; font-weight: 400; flex: none; }
+.chat-head .who { display: grid; line-height: 1.3; }
+.chat-head .who b { font-weight: 400; }
+.chat-head .who span { font-size: 0.75rem; color: var(--muted); }
+.chat-head .found { margin-left: auto; font-size: 0.75rem; color: var(--muted); }
+.chat-log { overflow-y: auto; padding: 14px 12px; display: flex; flex-direction: column; gap: 6px; overscroll-behavior: contain; }
+.sys { align-self: center; text-align: center; font-size: 0.8rem; color: var(--muted); max-width: 90%; margin: 6px 0; }
+.divider { align-self: center; font-size: 0.75rem; color: var(--muted); background: var(--wash); border-radius: 999px; padding: 2px 12px; margin: 8px 0; }
+.bubble { max-width: 78%; padding: 8px 14px; border-radius: 18px; line-height: 1.55; overflow-wrap: anywhere; white-space: pre-line; }
+.bubble.him { align-self: flex-start; background: var(--bubble); border-bottom-left-radius: 6px; }
+.bubble.her { align-self: flex-end; background: var(--accent-ink); color: #fff; border-bottom-right-radius: 6px; }
+.typing { align-self: flex-start; background: var(--bubble); border-radius: 18px; padding: 12px 14px; display: flex; gap: 4px; }
+.typing i { width: 6px; height: 6px; border-radius: 50%; background: var(--muted); opacity: .5; }
+@media (prefers-reduced-motion: no-preference) { .typing i { animation: dot 1s infinite; } .typing i:nth-child(2) { animation-delay: .15s } .typing i:nth-child(3) { animation-delay: .3s } @keyframes dot { 50% { opacity: 1; transform: translateY(-2px) } } }
+.chat-choices { border-top: 1px solid var(--line); padding: 10px 12px; display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 8px; min-height: 56px; align-items: center; }
+.reply { background: var(--paper); border: 1px solid var(--accent); color: var(--accent-ink); border-radius: 999px; padding: 7px 16px; cursor: pointer; text-align: left; }
+.reply:hover { background: var(--accent-soft); }
+.end-card { align-self: stretch; margin-top: 10px; border: 1px solid var(--line); background: var(--wash); border-radius: 14px; padding: 16px; display: grid; gap: 8px; text-align: center; justify-items: center; }
+.end-card .tag { font-size: 0.78rem; color: var(--accent-ink); }
+.end-card h3 { margin: 0; font-family: var(--serif); font-weight: 400; font-size: 1.25rem; }
+
+/* games */
+.zoom { position: relative; width: 100%; aspect-ratio: 4 / 3; max-height: 38vh; overflow: hidden; border-radius: 12px; background: var(--accent-soft); }
+.zoom img { width: 100%; height: 100%; object-fit: cover; transition: transform .9s cubic-bezier(.2,.7,.2,1); }
+.tot { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); gap: 10px; align-items: stretch; }
+.tot .opt {
+  background: var(--paper); border: 1px solid var(--line); border-radius: 14px; padding: 22px 12px; min-height: 120px;
+  font-family: var(--serif); font-size: 1.2rem; cursor: pointer; transition: border-color .2s, background .2s;
+}
+.tot .opt:hover { border-color: var(--accent); }
+.tot .opt.picked { background: var(--accent-soft); border-color: var(--accent); }
+.tot .or { align-self: center; color: var(--muted); font-size: .85rem; }
+.score { font-family: var(--serif); font-size: 3rem; font-weight: 300; color: var(--accent-ink); line-height: 1; font-variant-numeric: tabular-nums; }
+.tot-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; font-size: .95rem; }
+.tot-list li { display: flex; justify-content: space-between; gap: 12px; border-bottom: 1px solid var(--line); padding-bottom: 8px; }
+.tot-list .m { color: var(--muted); flex: none; font-size: .85rem; }
+.tot-list .m.yes { color: var(--accent-ink); }
+.scratch-wrap { position: relative; border-radius: var(--radius); }
+.scratch { position: absolute; inset: 0; width: 100%; height: 100%; border-radius: var(--radius); touch-action: none; cursor: crosshair; transition: opacity .7s; }
+.scratch.gone { opacity: 0; pointer-events: none; }
+.mic svg { width: 18px; height: 18px; flex: none; }
+.mic { display: inline-flex; align-items: center; gap: 8px; }
+.mic.listening { background: var(--accent-soft); }
+@media (prefers-reduced-motion: no-preference) { .mic.listening svg { animation: breathe 1.2s ease-in-out infinite; } }
+
+/* ---------- full page ---------- */
+.wrap { max-width: 620px; margin: 0 auto; padding-block: 48px 120px; }
+.replay { display: flex; justify-content: flex-end; margin-bottom: 28px; }
+main { display: grid; gap: 72px; }
+section { display: grid; gap: 20px; }
+.hero { gap: 14px; }
+.hero .sub { color: var(--muted); font-size: var(--step-1); }
+.days { font-family: var(--serif); color: var(--accent-ink); font-size: var(--step-1); }
+
+.clocks { border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); padding-block: 22px; gap: 14px; }
+.clock-row { display: grid; grid-template-columns: 1fr auto 1fr; align-items: end; gap: 12px; }
+.clock { display: grid; gap: 2px; min-width: 0; }
+.clock.right { text-align: right; }
+.clock .place { font-size: 0.85rem; color: var(--muted); }
+.clock .time { font-family: var(--serif); font-size: 2.1rem; font-weight: 300; line-height: 1.1; font-variant-numeric: tabular-nums; }
+.clock .day { font-size: 0.8rem; color: var(--muted); }
+.span { display: grid; justify-items: center; gap: 4px; padding-bottom: 10px; color: var(--muted); font-size: 0.78rem; text-align: center; }
+.span .rule { width: 56px; height: 1px; background: var(--accent); opacity: .6; }
+
+.letter-body { font-family: var(--serif); font-size: var(--step-1); line-height: 2; display: grid; gap: 1.1em; }
+
+.timeline { list-style: none; margin: 0; padding: 0; display: grid; }
+.timeline li { display: grid; grid-template-columns: 7.5rem 1fr; gap: 18px; position: relative; padding-bottom: 22px; }
+.timeline li::before { content: ""; position: absolute; left: calc(7.5rem + 9px - 0.5px); top: 0.9em; bottom: -0.2em; width: 1px; background: var(--line); }
+.timeline li:last-child::before { display: none; }
+.timeline li::after { content: ""; position: absolute; left: calc(7.5rem + 9px - 4px); top: 0.62em; width: 8px; height: 8px; border-radius: 50%; background: var(--paper); border: 1.5px solid var(--accent); box-sizing: border-box; }
+.timeline .when { color: var(--muted); font-size: 0.88rem; padding-top: 2px; text-align: right; }
+.timeline .what { padding-left: 18px; display: grid; gap: 2px; min-width: 0; }
+.timeline .t-title { font-weight: 400; }
+.timeline .t-text { color: var(--muted); font-size: 0.95rem; }
+@media (max-width: 480px) {
+  .timeline li { grid-template-columns: 1fr; gap: 0; padding-left: 24px; }
+  .timeline li::before { left: 3.5px; }
+  .timeline li::after { left: 0; }
+  .timeline .when { text-align: left; }
+  .timeline .what { padding-left: 0; }
+}
+
+.photos { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.photo { margin: 0; display: grid; gap: 6px; cursor: zoom-in; }
+.photo img { width: 100%; aspect-ratio: 4 / 5; object-fit: cover; border-radius: 10px; background: var(--accent-soft); }
+.photo figcaption { font-size: 0.85rem; color: var(--muted); }
+dialog.lightbox { border: 0; padding: 0; background: transparent; max-width: min(92vw, 900px); }
+dialog.lightbox::backdrop { background: rgb(0 0 0 / .8); }
+dialog.lightbox img { max-height: 82vh; width: auto; margin: 0 auto; border-radius: 8px; }
+dialog.lightbox p { color: #fff; text-align: center; padding-top: 10px; font-size: .95rem; }
+
+.card { background: var(--wash); border: 1px solid var(--line); border-radius: var(--radius); padding: 24px; display: grid; gap: 16px; }
+.card video { width: 100%; border-radius: 10px; background: #000; }
+
+.letters { border-top: 1px solid var(--line); }
+.ow { border-bottom: 1px solid var(--line); }
+.ow > button { width: 100%; display: flex; justify-content: space-between; align-items: center; gap: 14px; background: none; border: 0; padding: 16px 2px; cursor: pointer; text-align: left; }
+.ow .ow-label { display: grid; min-width: 0; }
+.ow .ow-pre { font-size: 0.82rem; color: var(--muted); }
+.ow .ow-title { font-family: var(--serif); font-size: var(--step-1); }
+.ow .chev { flex: none; width: 18px; height: 18px; color: var(--muted); transition: transform .25s; }
+.ow[open] .chev { transform: rotate(180deg); }
+.ow .ow-body { padding: 0 2px 22px; font-family: var(--serif); line-height: 2; display: grid; gap: 1em; }
+.ow .lock { font-size: 0.85rem; color: var(--muted); flex: none; }
+
+.ending p { white-space: pre-line; }
+footer { margin-top: 80px; color: var(--muted); font-size: 0.82rem; display: flex; align-items: center; gap: 10px; }
+
+.music {
+  position: fixed; z-index: 30;
+  right: calc(16px + env(safe-area-inset-right, 0px));
+  bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+  display: flex; align-items: center; gap: 8px; max-width: calc(100vw - 32px);
+  background: var(--paper); border: 1px solid var(--line); border-radius: 999px;
+  padding: 8px 16px 8px 10px; cursor: pointer; font-size: 0.85rem; box-shadow: 0 6px 24px rgb(80 50 20 / .08);
+}
+.music.mini { padding: 8px; }
+.music.mini span { display: none; }
+.music svg { width: 20px; height: 20px; color: var(--accent); flex: none; }
+.music span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.toast {
+  position: fixed; left: 50%; transform: translateX(-50%); z-index: 40;
+  bottom: calc(76px + env(safe-area-inset-bottom, 0px));
+  background: var(--ink); color: var(--paper); padding: 10px 18px; border-radius: 999px; font-size: 0.9rem; max-width: calc(100vw - 32px);
+}
+</style>
+<!--PREVIEW-HEAD-END-->
+</head>
+<body>
+<!--PREVIEW-BODY-START-->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="leaf" viewBox="0 0 24 24"><path d="M5 19c0-8 5-13 14-14-1 9-6 14-14 14z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M5 19L14 10" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></symbol>
+  <symbol id="chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="back" viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="plane" viewBox="0 0 24 24"><path d="M3 12h18M15 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="mic" viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></symbol>
+  <symbol id="play" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M10 8.5v7l6-3.5z" fill="currentColor"/></symbol>
+  <symbol id="pause" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M9.5 8.5v7M14.5 8.5v7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></symbol>
+</svg>
+
+<div id="gate" class="gate" hidden>
+  <form id="gate-form" class="gate-box" autocomplete="off">
+    <svg class="leaf" aria-hidden="true"><use href="#leaf"/></svg>
+    <h1 id="gate-title">สำหรับ จจ</h1>
+    <div class="field">
+      <label for="pw" id="gate-hint">คำที่ จจ พูดบ่อยที่สุด</label>
+      <input id="pw" class="input" type="text" autocapitalize="off" spellcheck="false" required>
+    </div>
+    <button class="btn" type="submit">เปิด</button>
+    <p id="gate-err" class="err" role="alert"></p>
+  </form>
+</div>
+
+<div id="stage" class="stage" hidden>
+  <div class="stage-top">
+    <div class="bars" id="bars"></div>
+    <div class="stage-nav">
+      <button class="icon-btn" id="st-back" type="button" aria-label="ย้อนกลับ"><svg aria-hidden="true"><use href="#back"/></svg>ย้อน</button>
+      <button class="icon-btn" id="st-skip" type="button">ข้ามไปดูทั้งหมด</button>
+    </div>
+  </div>
+  <div class="stage-body"><div class="scene" id="scene"></div></div>
+  <p class="tap-hint" id="tap-hint"></p>
+</div>
+
+<div id="site" class="wrap" hidden></div>
+<dialog id="lightbox" class="lightbox"><img id="lb-img" alt=""><p id="lb-cap"></p></dialog>
+<audio id="audio" preload="none" loop></audio>
+<button id="music" class="music" type="button" hidden aria-pressed="false">
+  <svg aria-hidden="true"><use id="music-icon" href="#play"/></svg><span id="music-label">เพลงของเรา</span>
+</button>
+<div id="toast" class="toast" role="status" hidden></div>
+
+<script>
+(() => {
+  const DEMO = window.__DEMO__ || null;
+  const $ = (s, el = document) => el.querySelector(s);
+  const TZ_HERE = "Asia/Bangkok";
+  const TZ_THERE = "America/Indiana/Indianapolis";
+  const REDUCED = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let C = null;
+
+  const store = {
+    get(k) { try { return JSON.parse(localStorage.getItem(k)); } catch { return null; } },
+    set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} },
+  };
+  const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const inline = (s) => esc(s).replace(/\[([^\]]+)\]/g, '<mark class="todo">[$1]</mark>').replace(/\n/g, "<br>");
+  const paras = (s) => String(s || "").split(/\n{2,}/).filter((x) => x.trim()).map((x) => `<p>${inline(x)}</p>`).join("");
+  const media = (key) => `/api/media/${encodeURIComponent(key)}`;
+  const wait = (ms) => new Promise((r) => setTimeout(r, REDUCED ? Math.min(ms, 150) : ms));
+
+  function skeleton(s) {
+    return String(s || "").normalize("NFC").toLowerCase()
+      .replace(/[\s\-_.,!?~'"]/g, "")
+      .replace(/[ฯ-ฺเ-๎]/g, "")
+      .replace(/[ชฌ]/g, "ฉ");
+  }
+
+  async function api(path, opts = {}) {
+    const res = await fetch(path, { credentials: "same-origin", ...opts, headers: { "content-type": "application/json", ...(opts.headers || {}) } });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw Object.assign(new Error(data.error || res.status), { status: res.status, data });
+    return data;
+  }
+
+  function toast(msg) {
+    const t = $("#toast");
+    t.textContent = msg;
+    t.hidden = false;
+    clearTimeout(toast._t);
+    toast._t = setTimeout(() => (t.hidden = true), 2600);
+  }
+
+  function stagger(el) {
+    [...el.children].forEach((c, i) => c.style.setProperty("--i", i));
+    el.classList.remove("rise");
+    void el.offsetWidth;
+    el.classList.add("rise");
+  }
+
+  // ---------- gate ----------
+  function showGate(title, hint) {
+    if (title) $("#gate-title").textContent = title;
+    if (hint) $("#gate-hint").textContent = hint;
+    $("#gate").hidden = false;
+    setTimeout(() => $("#pw").focus(), 50);
+  }
+
+  $("#gate-form").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const pw = $("#pw").value;
+    $("#gate-err").textContent = "";
+    try {
+      if (DEMO) {
+        if (!skeleton(pw) || !DEMO.gate.answers.some((a) => skeleton(a) === skeleton(pw))) throw new Error("wrong");
+      } else {
+        await api("/api/unlock", { method: "POST", body: JSON.stringify({ password: pw }) });
+      }
+      $("#gate").hidden = true;
+      load();
+    } catch {
+      $("#gate-err").textContent = "ยังไม่ใช่ ลองใหม่นะ";
+      const box = $("#gate-form");
+      box.classList.remove("shake");
+      void box.offsetWidth;
+      box.classList.add("shake");
+    }
+  });
+
+  async function load() {
+    try {
+      C = DEMO ? DEMO : await api("/api/content");
+    } catch (e) {
+      if (e.status === 401) return showGate();
+      $("#site").innerHTML = '<p class="muted">โหลดไม่สำเร็จ ลองรีเฟรชอีกครั้งนะ</p>';
+      $("#site").hidden = false;
+      return;
+    }
+    setupMusic();
+    const storyOn = C.story && C.story.show !== false;
+    if (storyOn && !store.get("jj_story_done")) startStory();
+    else renderFull();
+  }
+
+  // ---------- time helpers ----------
+  function partsIn(tz, d = new Date()) {
+    const f = new Intl.DateTimeFormat("en-CA", { timeZone: tz, year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", hour12: false });
+    const o = Object.fromEntries(f.formatToParts(d).map((p) => [p.type, p.value]));
+    const hour = Number(o.hour) % 24;
+    return { date: `${o.year}-${o.month}-${o.day}`, hour, minute: Number(o.minute), hm: `${String(hour).padStart(2, "0")}:${o.minute}` };
+  }
+  function offsetHours(tz, d = new Date()) {
+    const p = partsIn(tz, d);
+    const asUTC = Date.UTC(+p.date.slice(0, 4), +p.date.slice(5, 7) - 1, +p.date.slice(8, 10), p.hour, p.minute);
+    return Math.round((asUTC - d.getTime()) / 36e5);
+  }
+  const hoursApart = () => offsetHours(TZ_HERE) - offsetHours(TZ_THERE);
+  const thaiDay = (tz) => new Intl.DateTimeFormat("th-TH", { timeZone: tz, weekday: "long", day: "numeric", month: "short" }).format(new Date());
+  const thaiDate = (iso) => new Intl.DateTimeFormat("th-TH", { day: "numeric", month: "long", year: "numeric" }).format(new Date(iso + "T00:00:00"));
+  const todayHere = () => partsIn(TZ_HERE).date;
+  const statusNow = () => {
+    const t = partsIn(TZ_THERE);
+    const st = ((C.clocks && C.clocks.statuses) || []).find((x) => t.hour >= Number(x.from) && t.hour < Number(x.to));
+    return st ? st.text : "";
+  };
+
+  // =====================================================================
+  // Story mode
+  // =====================================================================
+  let SC = [];
+  let cur = 0;
+
+  function buildScenes() {
+    const st = C.story || {};
+    const out = [{ t: "intro", i: true }];
+    if (C.chat && C.chat.show !== false && (C.chat.nodes || []).length) out.push({ t: "chat", i: true, full: true });
+    if (C.timeline && C.timeline.show !== false) (C.timeline.items || []).forEach((it, k, a) => out.push({ t: "moment", it, k, n: a.length }));
+    if (C.clocks && C.clocks.show !== false) out.push({ t: "distance" });
+    const tot = st.thisOrThat;
+    if (tot && tot.show !== false && (tot.items || []).length) out.push({ t: "tot", i: true });
+    const pz = st.photoZoom;
+    if (pz && pz.show !== false) (pz.items || []).filter((x) => x.photo).forEach((q, k, a) => out.push({ t: "zoom", q, k, n: a.length, i: true }));
+    const tt = st.twoTruths;
+    if (tt && tt.show !== false) (tt.items || []).forEach((x, k, a) => out.push({
+      t: "quiz", k, n: a.length, i: true, label: tt.title, wrong: "อันนี้เรื่องจริงนะ ลองอีกที",
+      q: { q: tt.question || "ข้อไหนโกหก", choices: x.statements, answer: x.lie, right: x.reveal },
+    }));
+    if (st.quiz && st.quiz.show !== false) (st.quiz.items || []).forEach((q, k, a) => out.push({ t: "quiz", q, k, n: a.length, i: true, label: st.quiz.title }));
+    if (C.letter && C.letter.show !== false) out.push({ t: "letter", i: true });
+    if (C.trip && C.trip.show !== false) out.push({ t: "ticket", i: true });
+    out.push({ t: "outro", i: true });
+    return out;
+  }
+
+  function startStory(onlyChat) {
+    SC = buildScenes();
+    if (onlyChat) SC = SC.filter((s) => s.t === "chat").concat([{ t: "back-to-page", i: true }]);
+    cur = 0;
+    $("#site").hidden = true;
+    $("#stage").hidden = false;
+    document.body.style.overflow = "hidden";
+    $("#bars").innerHTML = SC.map(() => "<span></span>").join("");
+    showScene();
+  }
+
+  function finishStory() {
+    store.set("jj_story_done", true);
+    $("#stage").hidden = true;
+    document.body.style.overflow = "";
+    renderFull();
+    scrollTo(0, 0);
+  }
+
+  function go(d) {
+    const n = cur + d;
+    if (n < 0) return;
+    if (n >= SC.length) return finishStory();
+    cur = n;
+    showScene();
+  }
+
+  $("#st-back").addEventListener("click", (e) => { e.stopPropagation(); go(-1); });
+  $("#st-skip").addEventListener("click", (e) => { e.stopPropagation(); finishStory(); });
+  $("#stage").addEventListener("click", (e) => {
+    const s = SC[cur];
+    if (!s || s.i) return;
+    if (e.target.closest("button, a, input, textarea, .scene-interactive")) return;
+    go(1);
+  });
+  document.addEventListener("keydown", (e) => {
+    if ($("#stage").hidden) return;
+    if (e.key === "ArrowLeft") go(-1);
+    if ((e.key === "ArrowRight" || e.key === " ") && !SC[cur].i) { e.preventDefault(); go(1); }
+  });
+
+  function showScene() {
+    const s = SC[cur];
+    const el = $("#scene");
+    [...$("#bars").children].forEach((b, i) => b.classList.toggle("on", i <= cur));
+    $("#st-back").style.visibility = cur > 0 ? "visible" : "hidden";
+    $("#tap-hint").textContent = s.i ? "" : "แตะเพื่อไปต่อ";
+    el.className = "scene" + (s.full ? " full" : "");
+    el.scrollTop = 0;
+    const r = SCENES[s.t](s, el);
+    if (!s.full) stagger(el);
+    if (typeof r === "function") r();
+  }
+
+  const nextBtn = (label = "ไปต่อ") => `<button class="btn" type="button" data-next>${esc(label)}</button>`;
+  const wireNext = (el) => el.querySelectorAll("[data-next]").forEach((b) => b.addEventListener("click", () => go(1)));
+
+  const SCENES = {
+    intro(s, el) {
+      const st = C.story.intro || {};
+      el.innerHTML = `
+        <svg class="leaf" aria-hidden="true"><use href="#leaf"/></svg>
+        <p class="eyebrow">${inline(C.hero && C.hero.date)}</p>
+        <h1 class="big-title">${inline(st.title)}</h1>
+        <p class="lead">${inline(st.text)}</p>
+        <div class="row"><button class="btn" type="button" id="st-start">${esc(st.button || "เริ่มเลย")}</button></div>`;
+      $("#st-start").addEventListener("click", () => { playMusic(); go(1); });
+    },
+
+    moment(s, el) {
+      const it = s.it;
+      const photo = it.photo && !DEMO ? `<img class="moment-photo" src="${media(it.photo)}" alt="">` : "";
+      el.innerHTML = `
+        <p class="chapter">บทที่ ${s.k + 1}</p>
+        <p class="eyebrow">${inline(it.date)}</p>
+        <h1 class="big-title">${inline(it.title)}</h1>
+        ${it.text ? `<p class="lead">${inline(it.text)}</p>` : ""}
+        ${photo}`;
+    },
+
+    distance(s, el) {
+      const st = (C.story && C.story.distance) || {};
+      const h = partsIn(TZ_HERE), t = partsIn(TZ_THERE);
+      el.innerHTML = `
+        <h1 class="big-title">${inline(st.title || "")}</h1>
+        <div class="dist">
+          <div><div class="place">${esc(C.clocks.hereLabel)}</div><div class="time">${h.hm}</div></div>
+          <svg viewBox="0 0 70 24" aria-hidden="true"><circle cx="4" cy="12" r="3" fill="currentColor"/><path d="M8 12 C 25 0, 45 0, 62 12" fill="none" stroke="currentColor" stroke-width="1.2" stroke-dasharray="3 3"/><circle cx="66" cy="12" r="3" fill="currentColor"/></svg>
+          <div class="r"><div class="place">${esc(C.clocks.thereLabel)}</div><div class="time">${t.hm}</div></div>
+        </div>
+        <p class="facts">ห่างกัน ${Number(C.clocks.distanceKm || 0).toLocaleString("th-TH")} กิโลเมตร · เวลาต่างกัน ${hoursApart()} ชั่วโมง</p>
+        <p class="status-line">${inline(statusNow())}</p>`;
+    },
+
+    quiz(s, el) {
+      const q = s.q;
+      el.innerHTML = `
+        <p class="chapter">${esc(s.label || "")} · ${s.k + 1}/${s.n}</p>
+        <h1 class="big-title">${inline(q.q)}</h1>
+        ${choicesHTML(q)}`;
+      wireChoices(el, q, { wrongText: s.wrong });
+    },
+
+    zoom(s, el) {
+      const q = s.q;
+      const g = C.story.photoZoom || {};
+      const src = DEMO ? window.__DEMO_PHOTO__ || "" : media(q.photo);
+      const levels = [4, 2.6, 1.7, 1.15];
+      let lv = 0;
+      const x = Math.min(100, Math.max(0, Number(q.x ?? 50))), y = Math.min(100, Math.max(0, Number(q.y ?? 50)));
+      el.innerHTML = `
+        <p class="chapter">${esc(g.title || "")} · ${s.k + 1}/${s.n}</p>
+        <h1 class="big-title">${inline(q.q)}</h1>
+        <div class="zoom"><img id="zm" alt="" src="${esc(src)}" style="transform-origin:${x}% ${y}%;transform:scale(${levels[0]})"></div>
+        ${choicesHTML(q)}`;
+      const img = $("#zm", el);
+      wireChoices(el, q, {
+        wrongText: "ยังไม่ใช่ ซูมออกให้อีกนิด",
+        onWrong: () => { lv = Math.min(lv + 1, levels.length - 1); img.style.transform = `scale(${levels[lv]})`; },
+        onRight: () => { img.style.transform = "scale(1)"; },
+      });
+    },
+
+    tot(s, el) {
+      const g = C.story.thisOrThat;
+      const items = g.items || [];
+      const picks = [];
+      let i = 0;
+      const draw = () => {
+        if (i >= items.length) return result();
+        const it = items[i];
+        el.innerHTML = `
+          <p class="chapter">${esc(g.title || "")} · ${i + 1}/${items.length}</p>
+          ${g.intro ? `<p class="lead">${inline(g.intro)}</p>` : ""}
+          <div class="tot">
+            <button class="opt" type="button" data-v="1">${inline(it.a)}</button>
+            <span class="or">หรือ</span>
+            <button class="opt" type="button" data-v="2">${inline(it.b)}</button>
+          </div>`;
+        stagger(el);
+        el.querySelectorAll(".opt").forEach((b) => b.addEventListener("click", async () => {
+          b.classList.add("picked");
+          el.querySelectorAll(".opt").forEach((x) => (x.disabled = true));
+          picks.push(Number(b.dataset.v));
+          await wait(450);
+          i++;
+          draw();
+        }));
+      };
+      const result = () => {
+        const same = (it, k) => Number(it.mine) === picks[k];
+        const match = items.filter(same).length;
+        const r = g.results || {};
+        const line = match === items.length ? r.all : match * 2 >= items.length ? r.most : r.few;
+        el.innerHTML = `
+          <p class="chapter">${esc(g.title || "")}</p>
+          <p class="score">${match}/${items.length}</p>
+          <h1 class="big-title">${inline(line || "")}</h1>
+          <p class="muted small">ที่เช้งน้อยเลือก</p>
+          <ul class="tot-list">${items.map((it, k) => `<li><span>${inline(Number(it.mine) === 2 ? it.b : it.a)}</span><span class="m${same(it, k) ? " yes" : ""}">${same(it, k) ? "ตรงกัน" : "ไม่ตรง"}</span></li>`).join("")}</ul>
+          <div class="row">${nextBtn()}</div>`;
+        stagger(el);
+        wireNext(el);
+      };
+      draw();
+    },
+
+    letter(s, el) {
+      const st = (C.story && C.story.letter) || {};
+      el.innerHTML = `
+        <h1 class="big-title">${inline(st.teaser || "")}</h1>
+        <button class="envelope" type="button" id="env" aria-label="${esc(st.hint || "เปิดซอง")}"><span class="seal"><svg aria-hidden="true"><use href="#leaf"/></svg></span></button>
+        <p class="muted small" id="env-hint" style="text-align:center">${esc(st.hint || "")}</p>`;
+      $("#env").addEventListener("click", async () => {
+        $("#env").classList.add("open");
+        $("#env-hint").textContent = "";
+        await wait(500);
+        el.innerHTML = `
+          <div class="letter-paper">
+            <h2>${inline(C.letter.title)}</h2>
+            <div class="body">${paras(C.letter.body)}</div>
+            <p class="signoff">${inline(C.letter.signoff)}</p>
+          </div>
+          <div class="row">${nextBtn()}</div>`;
+        el.scrollTop = 0;
+        stagger(el);
+        wireNext(el);
+      });
+    },
+
+    ticket(s, el) {
+      const st = (C.story && C.story.ticket) || {};
+      const t = C.trip;
+      const voiceOn = st.voice !== false && SpeechRec && (st.voicePhrases || []).length > 0;
+      el.innerHTML = `
+        <h1 class="big-title">${inline(st.teaser || "")}</h1>
+        <p class="muted small" id="sc-hint">${inline(st.hint || "")}</p>
+        <div class="scratch-wrap scene-interactive" id="sc-wrap">${ticketHTML(t)}</div>
+        ${voiceOn ? `<div id="sc-voice" style="display:grid;gap:6px">
+          <div class="row"><button class="btn ghost mic" type="button" id="sc-mic"><svg aria-hidden="true"><use href="#mic"/></svg><span>${inline(st.voiceHint || "พูดคำลับ")}</span></button></div>
+          <p class="muted small" id="sc-vnote" aria-live="polite"></p>
+        </div>` : ""}
+        <div id="trip-more" hidden style="display:grid;gap:16px">
+          <h2>${inline(t.title)}</h2>
+          ${t.intro ? `<p>${inline(t.intro)}</p>` : ""}
+          ${stopsHTML(t)}
+          <div class="row">${nextBtn()}</div>
+        </div>`;
+      wireNext(el);
+      return () => {
+        let done = false;
+        const reveal = async () => {
+          if (done) return;
+          done = true;
+          card.reveal();
+          $("#sc-hint").hidden = true;
+          const v = $("#sc-voice");
+          if (v) v.hidden = true;
+          await wait(700);
+          const more = $("#trip-more");
+          more.hidden = false;
+          stagger(more);
+        };
+        const card = scratchCard($("#sc-wrap"), reveal);
+        if (voiceOn) wireVoice($("#sc-mic"), $("#sc-vnote"), st.voicePhrases, reveal);
+      };
+    },
+
+    outro(s, el) {
+      const st = (C.story && C.story.outro) || {};
+      el.innerHTML = `
+        <svg class="leaf" aria-hidden="true"><use href="#leaf"/></svg>
+        <h1 class="big-title">${inline(st.title)}</h1>
+        <p class="lead">${inline(st.text)}</p>
+        <div class="row"><button class="btn" type="button" id="st-done">${esc(st.button || "ดูทั้งหมด")}</button></div>`;
+      $("#st-done").addEventListener("click", finishStory);
+    },
+
+    "back-to-page"(s, el) {
+      el.innerHTML = `<h1 class="big-title">เล่นจบแล้ว</h1><div class="row"><button class="btn" type="button" id="st-done">กลับไปหน้าหลัก</button></div>`;
+      $("#st-done").addEventListener("click", finishStory);
+    },
+
+    chat(s, el) {
+      el.innerHTML = `
+        <div class="chat scene-interactive">
+          <div class="chat-head">
+            <span class="avatar">${esc((C.me || "?").replace(/^[เแโใไ]+/, "").slice(0, 1))}</span>
+            <span class="who"><b>${esc(C.me || "")}</b><span>${esc(C.chat.title || "")}</span></span>
+            <span class="found" id="ch-found"></span>
+          </div>
+          <div class="chat-log" id="ch-log" aria-live="polite"></div>
+          <div class="chat-choices" id="ch-choices"></div>
+        </div>`;
+      return () => runChat();
+    },
+  };
+
+  // ---------- chat game ----------
+  let chatRun = 0;
+  function runChat() {
+    const run = ++chatRun;
+    const chat = C.chat;
+    const nodes = Object.fromEntries((chat.nodes || []).map((n) => [n.id, n]));
+    const endingIds = (chat.nodes || []).filter((n) => n.ending).map((n) => n.id);
+    const found = new Set(store.get("jj_endings") || []);
+    const log = $("#ch-log"), choices = $("#ch-choices");
+    const alive = () => run === chatRun && document.body.contains(log);
+
+    const updateFound = () => { $("#ch-found").textContent = `ฉากจบ ${[...found].filter((x) => endingIds.includes(x)).length}/${endingIds.length}`; };
+    const scroll = () => { log.scrollTop = log.scrollHeight; };
+    const add = (html, cls) => { const d = document.createElement("div"); d.className = cls + " pop"; d.innerHTML = html; log.appendChild(d); scroll(); return d; };
+
+    async function play(id) {
+      const n = nodes[id];
+      if (!n) { add(`ยังไม่ได้เขียนต่อจากตรงนี้ (${esc(id)})`, "sys"); return; }
+      if (n.divider) add(esc(n.divider), "divider");
+      for (const m of n.him || []) {
+        if (!alive()) return;
+        const typing = add("<i></i><i></i><i></i>", "typing");
+        await wait(Math.min(1700, 550 + String(m).length * 35));
+        if (!alive()) return;
+        typing.remove();
+        add(esc(m), "bubble him");
+        await wait(250);
+      }
+      if (!alive()) return;
+      if (n.ending) return end(n);
+      choices.innerHTML = (n.choices || []).map((c, i) => `<button class="reply pop" type="button" data-i="${i}">${esc(c.text)}</button>`).join("");
+      choices.querySelectorAll(".reply").forEach((b) => b.addEventListener("click", async () => {
+        const c = n.choices[Number(b.dataset.i)];
+        choices.innerHTML = "";
+        add(esc(c.text), "bubble her");
+        await wait(500);
+        play(c.next);
+      }));
+    }
+
+    function end(n) {
+      found.add(n.id);
+      store.set("jj_endings", [...found]);
+      updateFound();
+      const isTrue = n.ending === "true";
+      const card = add(`
+        <span class="tag">${isTrue ? "ฉากจบจริง" : "ฉากจบแบบอื่น"}</span>
+        <h3>${inline(n.endingTitle || "")}</h3>
+        ${n.endingText ? `<p class="muted small">${inline(n.endingText)}</p>` : ""}
+        <div class="row" style="justify-content:center">${isTrue ? `<button class="btn" type="button" data-a="next">ไปต่อ</button>` : `<button class="btn" type="button" data-a="retry">ลองใหม่</button>`}</div>`, "end-card");
+      card.querySelector("[data-a]").addEventListener("click", (e) => {
+        if (e.currentTarget.dataset.a === "next") go(1);
+        else restart();
+      });
+    }
+
+    function restart() {
+      log.innerHTML = "";
+      choices.innerHTML = "";
+      runChat();
+    }
+
+    updateFound();
+    if (chat.intro) add(inline(chat.intro), "sys");
+    play(chat.start || (chat.nodes[0] && chat.nodes[0].id));
+  }
+
+  // ---------- game helpers ----------
+  const choicesHTML = (q) => `
+    <div class="choices">${(q.choices || []).map((c, i) => `<button class="choice" type="button" data-i="${i}">${inline(c)}</button>`).join("")}</div>
+    <p class="feedback" id="q-fb" aria-live="polite"></p>
+    <div class="row" id="q-next" hidden>${nextBtn()}</div>`;
+
+  function wireChoices(el, q, opts = {}) {
+    const ans = Number(q.answer) - 1;
+    el.querySelectorAll(".choice").forEach((b) => b.addEventListener("click", () => {
+      const fb = $("#q-fb", el);
+      if (Number(b.dataset.i) === ans) {
+        b.classList.add("right");
+        el.querySelectorAll(".choice").forEach((x) => (x.disabled = true));
+        fb.innerHTML = inline(q.right || "ถูกต้อง");
+        const nx = $("#q-next", el);
+        nx.hidden = false;
+        nx.classList.add("pop");
+        if (opts.onRight) opts.onRight();
+      } else {
+        b.classList.add("wrong");
+        b.disabled = true;
+        fb.textContent = opts.wrongText || "ไม่ใช่นะ ลองอีกที";
+        b.classList.remove("shake"); void b.offsetWidth; b.classList.add("shake");
+        if (opts.onWrong) opts.onWrong();
+      }
+    }));
+    wireNext(el);
+  }
+
+  function scratchCard(wrap, onDone) {
+    const cv = document.createElement("canvas");
+    cv.className = "scratch";
+    cv.setAttribute("aria-label", "ขูดเพื่อเปิด");
+    wrap.appendChild(cv);
+    const dpr = Math.min(2, window.devicePixelRatio || 1);
+    const w = wrap.clientWidth, h = wrap.clientHeight;
+    cv.width = Math.round(w * dpr);
+    cv.height = Math.round(h * dpr);
+    const ctx = cv.getContext("2d", { willReadFrequently: true });
+    ctx.scale(dpr, dpr);
+    ctx.fillStyle = "#EEDFC9";
+    ctx.fillRect(0, 0, w, h);
+    ctx.strokeStyle = "rgba(176,122,56,.16)";
+    ctx.lineWidth = 7;
+    for (let x = -h; x < w; x += 20) { ctx.beginPath(); ctx.moveTo(x, h); ctx.lineTo(x + h, 0); ctx.stroke(); }
+    ctx.fillStyle = "#8E5F25";
+    ctx.font = `400 17px ${getComputedStyle(document.body).fontFamily}`;
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText("ขูดตรงนี้", w / 2, h / 2);
+    ctx.globalCompositeOperation = "destination-out";
+    ctx.strokeStyle = ctx.fillStyle = "#000";
+    ctx.lineCap = ctx.lineJoin = "round";
+    ctx.lineWidth = 40;
+
+    let down = false, last = null, moves = 0;
+    const pos = (e) => { const r = cv.getBoundingClientRect(); return [e.clientX - r.left, e.clientY - r.top]; };
+    const dot = (p) => { ctx.beginPath(); ctx.arc(p[0], p[1], 20, 0, Math.PI * 2); ctx.fill(); };
+    const check = () => {
+      const d = ctx.getImageData(0, 0, cv.width, cv.height).data;
+      let clear = 0, total = 0;
+      for (let i = 3; i < d.length; i += 4 * 23) { total++; if (d[i] < 40) clear++; }
+      if (total && clear / total > 0.5) onDone();
+    };
+    cv.addEventListener("pointerdown", (e) => { down = true; last = pos(e); try { cv.setPointerCapture(e.pointerId); } catch {} dot(last); });
+    cv.addEventListener("pointermove", (e) => {
+      if (!down) return;
+      const p = pos(e);
+      ctx.beginPath(); ctx.moveTo(last[0], last[1]); ctx.lineTo(p[0], p[1]); ctx.stroke();
+      last = p;
+      if (++moves % 10 === 0) check();
+    });
+    const up = () => { if (down) { down = false; check(); } };
+    cv.addEventListener("pointerup", up);
+    cv.addEventListener("pointercancel", up);
+    return { reveal() { cv.classList.add("gone"); setTimeout(() => cv.remove(), 800); } };
+  }
+
+  const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition || null;
+
+  function lev(a, b) {
+    const m = a.length, n = b.length;
+    const d = Array.from({ length: m + 1 }, (_, i) => [i, ...Array(n).fill(0)]);
+    for (let j = 1; j <= n; j++) d[0][j] = j;
+    for (let i = 1; i <= m; i++) for (let j = 1; j <= n; j++)
+      d[i][j] = Math.min(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
+    return d[m][n];
+  }
+  function voiceMatch(said, phrases) {
+    const a = skeleton(said);
+    if (!a) return false;
+    return phrases.some((p) => {
+      const b = skeleton(p);
+      if (!b) return false;
+      if (a.includes(b)) return true;
+      const tol = Math.max(1, Math.floor(b.length / 3));
+      for (let i = 0; i + b.length - tol <= a.length; i++) {
+        for (let len = b.length - tol; len <= b.length + tol; len++) {
+          if (i + len <= a.length && lev(a.slice(i, i + len), b) <= tol) return true;
+        }
+      }
+      return lev(a, b) <= tol;
+    });
+  }
+
+  function wireVoice(btn, note, phrases, onMatch) {
+    let fails = 0, busy = false;
+    const noMic = "ใช้ไมค์ไม่ได้ ขูดเอาแทนนะ";
+    btn.addEventListener("click", () => {
+      if (busy) return;
+      let rec;
+      try { rec = new SpeechRec(); } catch { note.textContent = noMic; return; }
+      rec.lang = "th-TH";
+      rec.interimResults = false;
+      rec.maxAlternatives = 5;
+      busy = true;
+      btn.classList.add("listening");
+      note.textContent = "กำลังฟัง...";
+      let heard = false;
+      rec.onresult = (e) => {
+        heard = true;
+        const alts = [...e.results[0]].map((a) => a.transcript);
+        if (alts.some((a) => voiceMatch(a, phrases))) {
+          note.textContent = "ถูกแล้ว";
+          onMatch();
+        } else {
+          fails++;
+          note.textContent = fails >= 2 ? "ไม่เป็นไร ขูดเอาก็ได้นะ" : `ได้ยินว่า "${alts[0] || ""}" ลองอีกทีนะ`;
+        }
+      };
+      rec.onerror = (e) => {
+        heard = true;
+        note.textContent = e.error === "not-allowed" || e.error === "service-not-allowed" ? noMic : "ไม่ได้ยินเลย ลองอีกทีนะ";
+      };
+      rec.onend = () => {
+        busy = false;
+        btn.classList.remove("listening");
+        if (!heard) note.textContent = "ไม่ได้ยินเลย ลองอีกทีนะ";
+      };
+      try { rec.start(); } catch { busy = false; btn.classList.remove("listening"); note.textContent = noMic; }
+    });
+  }
+
+  // ---------- shared bits ----------
+  function ticketHTML(t) {
+    return `<div class="ticket">
+      <div class="ticket-top">
+        <div><div class="code">${esc(t.from.code)}</div><div class="city">${esc(t.from.city)}</div></div>
+        <svg class="plane" aria-hidden="true"><use href="#plane"/></svg>
+        <div class="to"><div class="code">${esc(t.to.code)}</div><div class="city">${esc(t.to.city)}</div></div>
+      </div>
+      <div class="ticket-bottom"><span>ผู้โดยสาร <b>${esc((C.her && C.her.name) || "")}</b></span><span>วันเดินทาง <b>${inline(t.dateText)}</b></span></div>
+    </div>`;
+  }
+  function stopsHTML(t) {
+    return (t.stops || []).length
+      ? `<ul class="stops">${t.stops.map((x) => `<li><span><span class="s-name">${inline(x.name)}</span>${x.text ? ` <span class="muted">· ${inline(x.text)}</span>` : ""}</span></li>`).join("")}</ul>`
+      : "";
+  }
+
+  // ---------- music ----------
+  function setupMusic() {
+    const btn = $("#music"), audio = $("#audio");
+    if (!C.music || !C.music.key || DEMO) { btn.hidden = true; return; }
+    audio.src = media(C.music.key);
+    $("#music-label").textContent = C.music.title || "เพลงของเรา";
+    btn.hidden = false;
+    btn.onclick = (e) => { e.stopPropagation(); audio.paused ? playMusic() : audio.pause(); };
+    const sync = () => {
+      const playing = !audio.paused;
+      $("#music-icon").setAttribute("href", playing ? "#pause" : "#play");
+      btn.setAttribute("aria-pressed", String(playing));
+      btn.classList.toggle("mini", playing);
+    };
+    audio.addEventListener("play", sync);
+    audio.addEventListener("pause", sync);
+  }
+  function playMusic() {
+    const audio = $("#audio");
+    if (!audio.src) return;
+    audio.play().catch(() => {});
+  }
+
+  // =====================================================================
+  // Full page
+  // =====================================================================
+  function renderFull() {
+    const s = [];
+    const her = C.her || {};
+
+    if (C.hero && C.hero.show !== false) {
+      let days = "";
+      if (C.togetherSince && /^\d{4}-\d{2}-\d{2}$/.test(C.togetherSince)) {
+        const n = Math.floor((Date.parse(todayHere()) - Date.parse(C.togetherSince)) / 864e5);
+        if (n >= 0) days = `<p class="days">อยู่ด้วยกันมาแล้ว ${n.toLocaleString("th-TH")} วัน</p>`;
+      }
+      s.push(`<section class="hero">
+        <svg class="leaf" aria-hidden="true"><use href="#leaf"/></svg>
+        <p class="eyebrow">${inline(C.hero.date)}</p>
+        <h1>${inline(C.hero.title)}</h1>
+        <p class="sub">${inline(C.hero.subtitle)}</p>${days}
+      </section>`);
+    }
+
+    if (C.clocks && C.clocks.show !== false) {
+      s.push(`<section class="clocks" aria-label="เวลาตอนนี้">
+        <div class="clock-row">
+          <div class="clock"><span class="place">${esc(C.clocks.hereLabel)}</span><span class="time" id="t-here"></span><span class="day" id="d-here"></span></div>
+          <div class="span"><span class="rule"></span><span id="t-span"></span></div>
+          <div class="clock right"><span class="place">${esc(C.clocks.thereLabel)}</span><span class="time" id="t-there"></span><span class="day" id="d-there"></span></div>
+        </div>
+        <p id="t-status"></p>
+      </section>`);
+    }
+
+    if (C.letter && C.letter.show !== false) {
+      s.push(`<section>
+        <h2>${inline(C.letter.title)}</h2>
+        <div class="letter-body">${paras(C.letter.body)}</div>
+        <p class="signoff">${inline(C.letter.signoff)}</p>
+      </section>`);
+    }
+
+    if (C.timeline && C.timeline.show !== false && (C.timeline.items || []).length) {
+      s.push(`<section>
+        <h2>${inline(C.timeline.title)}</h2>
+        <ol class="timeline">${C.timeline.items.map((it) => `<li>
+          <span class="when">${inline(it.date)}</span>
+          <div class="what"><span class="t-title">${inline(it.title)}</span>${it.text ? `<span class="t-text">${inline(it.text)}</span>` : ""}</div>
+        </li>`).join("")}</ol>
+      </section>`);
+    }
+
+    const photos = (C.photos && C.photos.items) || [];
+    if (C.photos && C.photos.show !== false && photos.length) {
+      s.push(`<section>
+        <h2>${inline(C.photos.title)}</h2>
+        <div class="photos">${photos.map((p, i) => `<figure class="photo" data-i="${i}">
+          <img loading="lazy" src="${media(p.key)}" alt="${esc(p.caption || "")}">
+          ${p.caption ? `<figcaption>${inline(p.caption)}</figcaption>` : ""}
+        </figure>`).join("")}</div>
+      </section>`);
+    }
+
+    if (C.video && C.video.enabled) {
+      s.push(`<section>
+        <h2>${inline(C.video.title)}</h2>
+        <div class="card" id="video-card"><p class="muted small">กำลังโหลด...</p></div>
+      </section>`);
+    }
+
+    if (C.openWhen && C.openWhen.show !== false && (C.openWhen.items || []).length) {
+      const today = todayHere();
+      s.push(`<section>
+        <h2>${inline(C.openWhen.title)}</h2>
+        ${C.openWhen.intro ? `<p class="muted">${inline(C.openWhen.intro)}</p>` : ""}
+        <div class="letters">${C.openWhen.items.map((it, i) => {
+          const locked = it.unlockDate && it.unlockDate > today;
+          return `<div class="ow" data-i="${i}">
+            <button type="button" aria-expanded="false" ${locked ? "disabled" : ""}>
+              <span class="ow-label"><span class="ow-pre">เปิดเมื่อ</span><span class="ow-title">${inline(it.title)}</span></span>
+              ${locked ? `<span class="lock">เปิดได้ ${esc(thaiDate(it.unlockDate))}</span>` : `<svg class="chev" aria-hidden="true"><use href="#chev"/></svg>`}
+            </button>
+            <div class="ow-body" hidden>${locked ? "" : paras(it.body)}</div>
+          </div>`;
+        }).join("")}</div>
+      </section>`);
+    }
+
+    if (C.trip && C.trip.show !== false) {
+      s.push(`<section>
+        <h2>${inline(C.trip.title)}</h2>
+        ${C.trip.intro ? `<p>${inline(C.trip.intro)}</p>` : ""}
+        ${ticketHTML(C.trip)}
+        ${stopsHTML(C.trip)}
+      </section>`);
+    }
+
+    if (C.reply && C.reply.show !== false) {
+      s.push(`<section>
+        <h2>${inline(C.reply.title)}</h2>
+        ${C.reply.intro ? `<p class="muted">${inline(C.reply.intro)}</p>` : ""}
+        <form id="reply-form" class="field">
+          <label for="reply-text" class="muted small">ข้อความ</label>
+          <textarea id="reply-text" class="input" maxlength="4000" placeholder="${esc(C.reply.placeholder || "")}"></textarea>
+          <div class="row"><button class="btn" type="submit">ส่ง</button></div>
+        </form>
+      </section>`);
+    }
+
+    if (C.ending && C.ending.show !== false) {
+      const e = C.ending;
+      s.push(`<section class="ending">
+        <h2>${inline(e.title)}</h2>
+        ${e.body ? `<p>${inline(e.body)}</p>` : ""}
+        ${e.callLink ? `<a class="btn" href="${esc(e.callLink)}" target="_blank" rel="noopener">${esc(e.callLabel || "โทรหาเช้งน้อย")}</a>` : ""}
+      </section>`);
+    }
+
+    const storyOn = C.story && C.story.show !== false;
+    const chatOn = C.chat && C.chat.show !== false && (C.chat.nodes || []).length;
+    $("#site").innerHTML = `
+      ${storyOn || chatOn ? `<div class="replay row">
+        ${chatOn ? `<button class="btn ghost" type="button" id="replay-chat">เล่นแชทอีกครั้ง</button>` : ""}
+        ${storyOn ? `<button class="btn ghost" type="button" id="replay-story">ดูเรื่องราวอีกครั้ง</button>` : ""}
+      </div>` : ""}
+      <main>${s.join("")}</main>
+      <footer><svg class="leaf" aria-hidden="true"><use href="#leaf"/></svg><span>${esc(C.me || "")} ทำให้ ${esc(her.short || her.name || "")}</span></footer>`;
+    $("#site").hidden = false;
+
+    const rs = $("#replay-story"); if (rs) rs.addEventListener("click", () => startStory());
+    const rc = $("#replay-chat"); if (rc) rc.addEventListener("click", () => startStory(true));
+    wireClocks();
+    wireOpenWhen();
+    wirePhotos();
+    wireReply();
+    if (C.video && C.video.enabled) videoInit();
+  }
+
+  let clockTimer = 0;
+  function wireClocks() {
+    if (!$("#t-here")) return;
+    const tick = () => {
+      if (!$("#t-here")) return;
+      const h = partsIn(TZ_HERE), t = partsIn(TZ_THERE);
+      $("#t-here").textContent = h.hm;
+      $("#t-there").textContent = t.hm;
+      $("#d-here").textContent = thaiDay(TZ_HERE);
+      $("#d-there").textContent = thaiDay(TZ_THERE);
+      $("#t-span").innerHTML = `${Number(C.clocks.distanceKm || 0).toLocaleString("th-TH")} กม.<br>ต่างกัน ${hoursApart()} ชม.`;
+      $("#t-status").innerHTML = inline(statusNow());
+    };
+    tick();
+    clearInterval(clockTimer);
+    clockTimer = setInterval(tick, 20000);
+  }
+
+  function wireOpenWhen() {
+    document.querySelectorAll(".ow").forEach((el) => {
+      const btn = el.querySelector("button");
+      btn.addEventListener("click", () => {
+        const open = !el.hasAttribute("open");
+        el.toggleAttribute("open", open);
+        btn.setAttribute("aria-expanded", String(open));
+        el.querySelector(".ow-body").hidden = !open;
+      });
+    });
+  }
+
+  function wirePhotos() {
+    const dlg = $("#lightbox");
+    document.querySelectorAll(".photo").forEach((fig) => {
+      fig.addEventListener("click", () => {
+        const p = C.photos.items[+fig.dataset.i];
+        $("#lb-img").src = fig.querySelector("img").src;
+        $("#lb-cap").textContent = p.caption || "";
+        if (dlg.showModal) dlg.showModal();
+      });
+    });
+    dlg.onclick = () => dlg.close();
+  }
+
+  function wireReply() {
+    const f = $("#reply-form");
+    if (!f) return;
+    f.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const ta = $("#reply-text");
+      const text = ta.value.trim();
+      if (!text) return;
+      const btn = f.querySelector("button");
+      btn.disabled = true;
+      try {
+        if (!DEMO) await api("/api/reply", { method: "POST", body: JSON.stringify({ text }) });
+        ta.value = "";
+        toast("ส่งแล้ว เช้งน้อยจะได้อ่านตอนตื่น");
+      } catch {
+        toast("ส่งไม่สำเร็จ ลองอีกครั้งนะ");
+      } finally {
+        btn.disabled = false;
+      }
+    });
+  }
+
+  // ---------- watch-once video ----------
+  async function videoInit() {
+    const card = $("#video-card");
+    const v = C.video;
+    let st;
+    try {
+      st = DEMO ? { state: "unwatched" } : await api("/api/video/status");
+    } catch {
+      card.innerHTML = '<p class="muted small">โหลดวิดีโอไม่สำเร็จ ลองรีเฟรชนะ</p>';
+      return;
+    }
+    const watched = () => { card.innerHTML = `<p>${inline(v.afterText || "")}</p>`; };
+    if (st.state === "watched") return watched();
+
+    const mins = Math.max(1, Math.ceil((st.remainingSec || 0) / 60));
+    card.innerHTML = `
+      <p>${inline(v.intro)}</p>
+      ${st.state === "playing" ? `<p class="muted small">ยังดูต่อได้อีกประมาณ ${mins} นาที</p>` : ""}
+      <div class="row"><button class="btn" id="v-go" type="button">${st.state === "playing" ? "ดูต่อ" : "พร้อมแล้ว"}</button></div>
+      <p class="muted small" id="v-note"></p>`;
+
+    let armed = st.state === "playing";
+    $("#v-go").addEventListener("click", async () => {
+      if (DEMO) { $("#v-note").textContent = "ตัวอย่าง: วิดีโอจริงจะเล่นตรงนี้"; return; }
+      if (!armed) {
+        armed = true;
+        $("#v-go").textContent = "เริ่มเลย";
+        $("#v-note").textContent = `กดอีกครั้งเพื่อเริ่ม เมื่อเริ่มแล้วจะดูได้ประมาณ ${v.windowMinutes || 20} นาที แล้ววิดีโอจะหายไป`;
+        return;
+      }
+      try {
+        const r = await api("/api/video/start", { method: "POST" });
+        $("#audio").pause();
+        card.innerHTML = `<video id="vid" playsinline controls controlslist="nodownload noplaybackrate" disablepictureinpicture></video>`;
+        const vid = $("#vid");
+        vid.addEventListener("contextmenu", (e) => e.preventDefault());
+        vid.addEventListener("ended", async () => {
+          try { await api("/api/video/finish", { method: "POST" }); } catch {}
+          setTimeout(watched, 1500);
+        });
+        vid.src = r.src;
+        vid.play().catch(() => {});
+      } catch (e) {
+        if (e.status === 410) return watched();
+        $("#v-note").textContent = "เปิดวิดีโอไม่สำเร็จ ลองอีกครั้งนะ";
+      }
+    });
+  }
+
+  // ---------- start ----------
+  (async () => {
+    if (DEMO) return showGate(DEMO.gate.title, DEMO.gate.hint);
+    try {
+      const s = await api("/api/session");
+      if (s.unlocked) return load();
+      showGate(s.title, s.hint);
+    } catch {
+      showGate();
+    }
+  })();
+})();
+</script>
+<!--PREVIEW-BODY-END-->
+</body>
+</html>

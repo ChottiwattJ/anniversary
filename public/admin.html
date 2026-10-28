@@ -1,0 +1,627 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Anniversary Admin</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500&display=swap">
+<style>
+:root {
+  --bg: #F7F5F1; --card: #FFFFFF; --ink: #26211D; --muted: #7A7066; --line: #E4DED5;
+  --accent: #9E6B2A; --danger: #B3402F; --ok: #3D7A4A;
+  --sans: "IBM Plex Sans Thai", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root { --bg: #13110F; --card: #1C1915; --ink: #ECE5DA; --muted: #A0958A; --line: #2F2922; --accent: #D4A45F; --danger: #E07A66; --ok: #7DBB8A; color-scheme: dark; }
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.6 var(--sans);
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+[hidden] { display: none !important; }
+.wrap { max-width: 760px; margin: 0 auto; padding-block: 24px 120px; display: grid; gap: 14px; }
+header { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; }
+h1 { font-size: 1.25rem; font-weight: 500; margin: 0; }
+details.panel { background: var(--card); border: 1px solid var(--line); border-radius: 12px; }
+details.panel > summary { cursor: pointer; padding: 14px 18px; font-weight: 500; list-style: none; display: flex; justify-content: space-between; }
+details.panel > summary::after { content: "+"; color: var(--muted); }
+details.panel[open] > summary::after { content: "–"; }
+.body { padding: 4px 18px 18px; display: grid; gap: 14px; }
+label.f { display: grid; gap: 4px; font-size: 0.85rem; color: var(--muted); }
+label.chk { display: flex; gap: 8px; align-items: center; font-size: 0.9rem; }
+input[type=text], input[type=number], input[type=date], input[type=url], input[type=password], textarea, select {
+  width: 100%; border: 1px solid var(--line); background: var(--bg); color: var(--ink); border-radius: 8px; padding: 8px 10px; font: inherit; font-size: 0.95rem;
+}
+textarea { min-height: 90px; resize: vertical; }
+textarea.big { min-height: 240px; }
+.list { display: grid; gap: 10px; }
+.item { border: 1px solid var(--line); border-radius: 10px; padding: 12px; display: grid; gap: 10px; }
+.item-head { display: flex; justify-content: space-between; align-items: center; font-size: 0.8rem; color: var(--muted); }
+.btn { border: 1px solid var(--line); background: var(--card); color: var(--ink); border-radius: 8px; padding: 7px 12px; font: inherit; font-size: 0.9rem; cursor: pointer; }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+.btn.danger { color: var(--danger); }
+.btn.sm { padding: 3px 8px; font-size: 0.8rem; }
+.btns { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.muted { color: var(--muted); }
+.small { font-size: 0.85rem; }
+.grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; }
+.thumbs { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
+.thumb { border: 1px solid var(--line); border-radius: 10px; overflow: hidden; display: grid; }
+.thumb img { width: 100%; aspect-ratio: 4/5; object-fit: cover; background: var(--bg); display: block; }
+.thumb .tb { padding: 8px; display: grid; gap: 6px; }
+.bar { position: fixed; left: 0; right: 0; bottom: 0; background: var(--card); border-top: 1px solid var(--line); z-index: 5;
+  padding: 10px max(16px, env(safe-area-inset-right, 0px)) calc(10px + env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px)); }
+.bar .in { max-width: 760px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+.status-ok { color: var(--ok); } .status-err { color: var(--danger); }
+.log { display: grid; gap: 8px; max-height: 360px; overflow: auto; }
+.log .entry { border-bottom: 1px solid var(--line); padding-bottom: 8px; white-space: pre-wrap; overflow-wrap: anywhere; }
+.pill { display: inline-block; padding: 1px 8px; border-radius: 999px; border: 1px solid var(--line); font-size: 0.8rem; }
+progress { width: 100%; }
+.login { max-width: 380px; margin: 15vh auto 0; display: grid; gap: 12px; }
+</style>
+</head>
+<body>
+
+<div id="login" class="login" hidden>
+  <h1>Anniversary admin</h1>
+  <label class="f">Admin token<input id="token" type="password" autocomplete="current-password"></label>
+  <button id="login-btn" class="btn primary" type="button">Sign in</button>
+  <p id="login-err" class="small status-err"></p>
+</div>
+
+<div id="app" class="wrap" hidden>
+  <header>
+    <h1>Anniversary admin</h1>
+    <div class="btns">
+      <a class="btn" href="/" target="_blank" rel="noopener">Open site</a>
+      <button id="logout" class="btn" type="button">Sign out</button>
+    </div>
+  </header>
+  <p class="small muted">Edit, then press Save at the bottom. Uploads save on their own. Text in [brackets] shows highlighted on the site so you can spot placeholders.</p>
+  <div id="panels" class="wrap" style="padding:0;width:100%"></div>
+</div>
+
+<div id="bar" class="bar" hidden>
+  <div class="in">
+    <span id="save-status" class="small muted">No changes</span>
+    <button id="save" class="btn primary" type="button">Save</button>
+  </div>
+</div>
+
+<script>
+(() => {
+  const $ = (s, el = document) => el.querySelector(s);
+  let TOKEN = "";
+  try { TOKEN = localStorage.getItem("adminToken") || ""; } catch {}
+  let C = null;
+  let dirty = false;
+  const blobCache = new Map();
+
+  const SCHEMA = [
+    { title: "Basics", fields: [
+      { k: "her.name", l: "Her name" },
+      { k: "her.short", l: "Her short name" },
+      { k: "me", l: "Your name (as she calls you)" },
+      { k: "togetherSince", l: "Together since (shows a day counter; leave empty to hide)", t: "date" },
+    ]},
+    { title: "Password screen", fields: [
+      { k: "gate.title", l: "Title" },
+      { k: "gate.hint", l: "Hint under the box" },
+      { k: "gate.answers", l: "Accepted answers, one per line (vowels and tone marks are ignored; ช counts as ฉ)", t: "lines" },
+    ]},
+    { title: "Story mode (tap-through intro)", fields: [
+      { k: "story.show", l: "Play the story first (after it's finished once, she lands on the full page)", t: "bool" },
+      { k: "story.intro.title", l: "Intro title" },
+      { k: "story.intro.text", l: "Intro text", t: "textarea" },
+      { k: "story.intro.button", l: "Start button" },
+      { k: "story.distance.title", l: "Distance page title" },
+      { k: "story.quiz.show", l: "Show quiz", t: "bool" },
+      { k: "story.quiz.title", l: "Quiz label" },
+      { k: "story.quiz.items", l: "Quiz questions", t: "list", add: { q: "", choices: ["", "", ""], answer: 1, right: "" },
+        sub: [{ k: "q", l: "Question" }, { k: "choices", l: "Choices, one per line", t: "lines" },
+              { k: "answer", l: "Correct choice number (1 = first line)", t: "number" }, { k: "right", l: "Shown after the right answer", t: "textarea" }] },
+      { k: "story.letter.teaser", l: "Letter page title" },
+      { k: "story.letter.hint", l: "Envelope hint" },
+      { k: "story.ticket.teaser", l: "Ticket page title" },
+      { k: "story.ticket.hint", l: "Text above the scratch card" },
+      { k: "story.ticket.voice", l: "Also allow opening the ticket by voice (phones without mic support just scratch)", t: "bool" },
+      { k: "story.ticket.voiceHint", l: "Voice button label" },
+      { k: "story.ticket.voicePhrases", l: "Words that open it, one per line (vowels and tone marks ignored, small mishearings OK)", t: "lines" },
+      { k: "story.outro.title", l: "Last page title" },
+      { k: "story.outro.text", l: "Last page text", t: "textarea" },
+      { k: "story.outro.button", l: "Last page button" },
+    ]},
+    { title: "Game: This or that", fields: [
+      { k: "story.thisOrThat.show", l: "Show", t: "bool" },
+      { k: "story.thisOrThat.title", l: "Label" },
+      { k: "story.thisOrThat.intro", l: "Intro", t: "textarea" },
+      { k: "story.thisOrThat.items", l: "Pairs (set your own pick for each)", t: "list", add: { a: "", b: "", mine: 1 },
+        sub: [{ k: "a", l: "Left option" }, { k: "b", l: "Right option" },
+              { k: "mine", l: "Your pick", t: "select", num: true, opts: [["1", "Left"], ["2", "Right"]] }] },
+      { k: "story.thisOrThat.results.all", l: "Result line when everything matches" },
+      { k: "story.thisOrThat.results.most", l: "Result line when half or more match" },
+      { k: "story.thisOrThat.results.few", l: "Result line when fewer than half match" },
+    ]},
+    { title: "Game: Photo zoom", fields: [
+      { k: "story.photoZoom.show", l: "Show", t: "bool" },
+      { k: "story.photoZoom.title", l: "Label" },
+      { k: "story.photoZoom.items", l: "Rounds. Upload photos in the Photos section first. Rounds without a photo are skipped.", t: "list",
+        add: { photo: "", x: 50, y: 50, q: "", choices: ["", "", ""], answer: 1, right: "" },
+        sub: [
+          { k: "photo", l: "Photo", t: "photo" },
+          { k: "x", l: "Start zoomed on: across, 0 = left, 100 = right", t: "number" },
+          { k: "y", l: "Start zoomed on: down, 0 = top, 100 = bottom", t: "number" },
+          { k: "q", l: "Question" },
+          { k: "choices", l: "Choices, one per line", t: "lines" },
+          { k: "answer", l: "Correct choice number (1 = first line)", t: "number" },
+          { k: "right", l: "Shown after the right answer", t: "textarea" },
+        ] },
+    ]},
+    { title: "Game: Two truths one lie", fields: [
+      { k: "story.twoTruths.show", l: "Show", t: "bool" },
+      { k: "story.twoTruths.title", l: "Label" },
+      { k: "story.twoTruths.question", l: "Question" },
+      { k: "story.twoTruths.items", l: "Rounds", t: "list", add: { statements: ["", "", ""], lie: 3, reveal: "" },
+        sub: [
+          { k: "statements", l: "Statements, one per line", t: "lines" },
+          { k: "lie", l: "Which line is the lie (1 = first)", t: "number" },
+          { k: "reveal", l: "Shown after she finds the lie", t: "textarea" },
+        ] },
+    ]},
+    { title: "Chat game", custom: "chatcheck", fields: [
+      { k: "chat.show", l: "Show (first chapter of the story)", t: "bool" },
+      { k: "chat.title", l: "Subtitle under your name" },
+      { k: "chat.intro", l: "Note at the top of the chat", t: "textarea" },
+      { k: "chat.start", l: "Starting step", t: "node" },
+      { k: "chat.nodes", l: "Steps. Each step: your messages, then her reply choices. Give each step a short unique ID.", t: "list",
+        add: { id: "", divider: "", him: [], choices: [], ending: "", endingTitle: "", endingText: "" },
+        sub: [
+          { k: "id", l: "Step ID (e.g. n4, end_funny2)" },
+          { k: "divider", l: "Date label above (optional)" },
+          { k: "him", l: "Your messages, one per line", t: "lines" },
+          { k: "choices", l: "Her reply choices", t: "list", add: { text: "", next: "" },
+            sub: [{ k: "text", l: "Her reply" }, { k: "next", l: "Goes to step", t: "node" }] },
+          { k: "ending", l: "Ending", t: "select", opts: [["", "Not an ending"], ["funny", "Funny ending (she can retry)"], ["true", "True ending (story continues)"]] },
+          { k: "endingTitle", l: "Ending title" },
+          { k: "endingText", l: "Ending text", t: "textarea" },
+        ] },
+    ]},
+    { title: "Opening", fields: [
+      { k: "hero.show", l: "Show", t: "bool" },
+      { k: "hero.date", l: "Small date line" },
+      { k: "hero.title", l: "Title" },
+      { k: "hero.subtitle", l: "Subtitle", t: "textarea" },
+    ]},
+    { title: "Clocks", fields: [
+      { k: "clocks.show", l: "Show", t: "bool" },
+      { k: "clocks.hereLabel", l: "Her city label" },
+      { k: "clocks.thereLabel", l: "Your city label" },
+      { k: "clocks.distanceKm", l: "Distance (km)", t: "number" },
+      { k: "clocks.statuses", l: "What you're doing, by your local hour (0–24)", t: "list", add: { from: 0, to: 1, text: "" },
+        sub: [{ k: "from", l: "From hour", t: "number" }, { k: "to", l: "To hour", t: "number" }, { k: "text", l: "Text" }] },
+    ]},
+    { title: "Letter", fields: [
+      { k: "letter.show", l: "Show", t: "bool" },
+      { k: "letter.title", l: "Heading" },
+      { k: "letter.body", l: "Letter (blank line = new paragraph)", t: "big" },
+      { k: "letter.signoff", l: "Sign-off", t: "textarea" },
+    ]},
+    { title: "Timeline", fields: [
+      { k: "timeline.show", l: "Show", t: "bool" },
+      { k: "timeline.title", l: "Heading" },
+      { k: "timeline.items", l: "Milestones (top to bottom). Each one is also a page in the story.", t: "list", add: { date: "", title: "", text: "", photo: "" },
+        sub: [{ k: "date", l: "When" }, { k: "title", l: "Title" }, { k: "text", l: "Detail", t: "textarea" },
+              { k: "photo", l: "Photo on its story page (upload in Photos first)", t: "photo" }] },
+    ]},
+    { title: "Photos", custom: "photos", fields: [
+      { k: "photos.show", l: "Show", t: "bool" },
+      { k: "photos.title", l: "Heading" },
+    ]},
+    { title: "Watch-once video", custom: "video", fields: [
+      { k: "video.enabled", l: "Show on site (needs an uploaded video)", t: "bool" },
+      { k: "video.title", l: "Heading" },
+      { k: "video.intro", l: "Text before she presses play", t: "textarea" },
+      { k: "video.windowMinutes", l: "Minutes allowed after first play (covers pauses and reloads)", t: "number" },
+      { k: "video.afterText", l: "Text after it's watched", t: "textarea" },
+    ]},
+    { title: "Open-when letters", fields: [
+      { k: "openWhen.show", l: "Show", t: "bool" },
+      { k: "openWhen.title", l: "Heading" },
+      { k: "openWhen.intro", l: "Intro", t: "textarea" },
+      { k: "openWhen.items", l: "Letters", t: "list", add: { title: "", body: "", unlockDate: "" },
+        sub: [{ k: "title", l: "Open when…" }, { k: "body", l: "Letter", t: "textarea" }, { k: "unlockDate", l: "Locked until (optional, Thai date)", t: "date" }] },
+    ]},
+    { title: "Summer trip", fields: [
+      { k: "trip.show", l: "Show", t: "bool" },
+      { k: "trip.title", l: "Heading" },
+      { k: "trip.intro", l: "Intro", t: "textarea" },
+      { k: "trip.from.code", l: "From code" }, { k: "trip.from.city", l: "From city" },
+      { k: "trip.to.code", l: "To code" }, { k: "trip.to.city", l: "To city" },
+      { k: "trip.dateText", l: "Travel date text" },
+      { k: "trip.stops", l: "Stops", t: "list", add: { name: "", text: "" }, sub: [{ k: "name", l: "Place" }, { k: "text", l: "Note" }] },
+    ]},
+    { title: "Message box (her replies)", fields: [
+      { k: "reply.show", l: "Show", t: "bool" },
+      { k: "reply.title", l: "Heading" },
+      { k: "reply.intro", l: "Intro", t: "textarea" },
+      { k: "reply.placeholder", l: "Placeholder" },
+    ]},
+    { title: "Ending", fields: [
+      { k: "ending.show", l: "Show", t: "bool" },
+      { k: "ending.title", l: "Heading" },
+      { k: "ending.body", l: "Text", t: "textarea" },
+      { k: "ending.callLabel", l: "Button label (optional)" },
+      { k: "ending.callLink", l: "Button link, e.g. a LINE or FaceTime link (optional)", t: "url" },
+    ]},
+    { title: "Music", custom: "music", fields: [{ k: "music.title", l: "Song title on the button" }] },
+    { title: "Activity: opens and her messages", custom: "stats", fields: [] },
+  ];
+
+  // ---------- helpers ----------
+  const get = (o, path) => path.split(".").reduce((a, k) => (a == null ? a : a[k]), o);
+  function set(o, path, v) {
+    const ks = path.split(".");
+    let cur = o;
+    ks.slice(0, -1).forEach((k) => { if (cur[k] == null || typeof cur[k] !== "object") cur[k] = {}; cur = cur[k]; });
+    cur[ks.at(-1)] = v;
+  }
+  const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const fmt = (iso, tz) => new Intl.DateTimeFormat("en-GB", { timeZone: tz, dateStyle: "medium", timeStyle: "short" }).format(new Date(iso));
+
+  async function call(path, opts = {}) {
+    const res = await fetch(path, { ...opts, headers: { authorization: `Bearer ${TOKEN}`, ...(opts.headers || {}) } });
+    if (res.status === 401) { showLogin("Token rejected."); throw new Error("unauthorized"); }
+    const ct = res.headers.get("content-type") || "";
+    const data = ct.includes("json") ? await res.json() : res;
+    if (!res.ok) throw new Error((data && data.error) || res.status);
+    return data;
+  }
+  function markDirty() { dirty = true; status("Unsaved changes", ""); }
+  function status(msg, cls) { const s = $("#save-status"); s.textContent = msg; s.className = `small ${cls || "muted"}`; }
+
+  async function save(quiet) {
+    try {
+      await call("/api/admin/content", { method: "PUT", headers: { "content-type": "application/json" }, body: JSON.stringify(C) });
+      dirty = false;
+      status(quiet ? "Saved with upload" : "Saved", "status-ok");
+    } catch (e) { status(`Save failed: ${e.message}`, "status-err"); }
+  }
+
+  function upload(file, name, onProgress) {
+    return new Promise((resolve, reject) => {
+      const xhr = new XMLHttpRequest();
+      xhr.open("POST", `/api/admin/upload?name=${encodeURIComponent(name || file.name || "file")}`);
+      xhr.setRequestHeader("authorization", `Bearer ${TOKEN}`);
+      xhr.setRequestHeader("content-type", file.type || "application/octet-stream");
+      xhr.upload.onprogress = (e) => e.lengthComputable && onProgress && onProgress(e.loaded / e.total);
+      xhr.onload = () => (xhr.status < 300 ? resolve(JSON.parse(xhr.responseText)) : reject(new Error(`Upload failed (${xhr.status})`)));
+      xhr.onerror = () => reject(new Error("Upload failed (network)"));
+      xhr.send(file);
+    });
+  }
+
+  async function shrinkImage(file) {
+    try {
+      const bmp = await createImageBitmap(file);
+      const max = 2000;
+      const scale = Math.min(1, max / Math.max(bmp.width, bmp.height));
+      const c = document.createElement("canvas");
+      c.width = Math.round(bmp.width * scale); c.height = Math.round(bmp.height * scale);
+      c.getContext("2d").drawImage(bmp, 0, 0, c.width, c.height);
+      const blob = await new Promise((r) => c.toBlob(r, "image/jpeg", 0.86));
+      return blob ? new File([blob], file.name.replace(/\.\w+$/, "") + ".jpg", { type: "image/jpeg" }) : file;
+    } catch { return file; }
+  }
+
+  async function blobUrl(key) {
+    if (blobCache.has(key)) return blobCache.get(key);
+    const res = await fetch(`/api/admin/media/${encodeURIComponent(key)}`, { headers: { authorization: `Bearer ${TOKEN}` } });
+    const url = URL.createObjectURL(await res.blob());
+    blobCache.set(key, url);
+    return url;
+  }
+
+  // ---------- field rendering ----------
+  function fieldEl(f, obj, path) {
+    const id = `f-${path.replace(/\W/g, "-")}`;
+    const val = get(obj, f.k);
+    const wrap = document.createElement("div");
+    const t = f.t || "text";
+    if (t === "bool") {
+      wrap.innerHTML = `<label class="chk"><input type="checkbox" id="${id}" ${val ? "checked" : ""}> ${esc(f.l)}</label>`;
+      $("input", wrap).addEventListener("change", (e) => { set(obj, f.k, e.target.checked); markDirty(); });
+    } else if (t === "list") {
+      wrap.innerHTML = `<div class="f small muted">${esc(f.l)}</div><div class="list"></div><div class="btns"><button class="btn sm" type="button">+ Add</button></div>`;
+      const list = $(".list", wrap);
+      const draw = () => {
+        const arr = get(obj, f.k) || [];
+        list.innerHTML = "";
+        arr.forEach((it, i) => {
+          const box = document.createElement("div");
+          box.className = "item";
+          box.innerHTML = `<div class="item-head"><span>#${i + 1}</span><span class="btns">
+            <button class="btn sm" data-a="up" type="button">↑</button><button class="btn sm" data-a="down" type="button">↓</button>
+            <button class="btn sm danger" data-a="del" type="button">Remove</button></span></div>`;
+          f.sub.forEach((sf) => box.appendChild(fieldEl(sf, it, `${path}-${i}-${sf.k}`)));
+          box.querySelectorAll("[data-a]").forEach((b) => b.addEventListener("click", () => {
+            const a = b.dataset.a;
+            if (a === "del") arr.splice(i, 1);
+            if (a === "up" && i > 0) [arr[i - 1], arr[i]] = [arr[i], arr[i - 1]];
+            if (a === "down" && i < arr.length - 1) [arr[i + 1], arr[i]] = [arr[i], arr[i + 1]];
+            markDirty(); draw();
+          }));
+          list.appendChild(box);
+        });
+      };
+      $(".btns > .btn", wrap).addEventListener("click", () => {
+        const arr = get(obj, f.k) || [];
+        arr.push(structuredClone(f.add));
+        set(obj, f.k, arr);
+        markDirty(); draw();
+      });
+      draw();
+    } else if (t === "select" || t === "photo" || t === "node") {
+      let opts = f.opts || [];
+      if (t === "photo") opts = [["", "No photo"], ...((C.photos && C.photos.items) || []).map((p, i) => [p.key, p.caption || `Photo ${i + 1}`])];
+      if (t === "node") opts = [["", "Choose a step"], ...((C.chat && C.chat.nodes) || []).filter((n) => n.id).map((n) => [n.id, n.id + (n.ending ? ` (${n.ending} ending)` : "")])];
+      if (val && !opts.some((o) => String(o[0]) === String(val))) opts.push([val, `${val} (missing)`]);
+      wrap.innerHTML = `<label class="f">${esc(f.l)}<select id="${id}">${opts.map(([v, label]) => `<option value="${esc(v)}" ${String(v) === String(val ?? "") ? "selected" : ""}>${esc(label)}</option>`).join("")}</select></label>`;
+      $("select", wrap).addEventListener("change", (e) => { set(obj, f.k, f.num ? Number(e.target.value) : e.target.value); markDirty(); });
+    } else {
+      const isArea = t === "textarea" || t === "big" || t === "lines";
+      const shown = t === "lines" ? (val || []).join("\n") : (val ?? "");
+      const type = t === "number" ? "number" : t === "date" ? "date" : t === "url" ? "url" : "text";
+      wrap.innerHTML = `<label class="f">${esc(f.l)}${isArea
+        ? `<textarea id="${id}" class="${t === "big" ? "big" : ""}">${esc(shown)}</textarea>`
+        : `<input id="${id}" type="${type}" value="${esc(shown)}">`}</label>`;
+      const input = $("input, textarea", wrap);
+      input.addEventListener("input", () => {
+        let v = input.value;
+        if (t === "number") v = v === "" ? 0 : Number(v);
+        if (t === "lines") v = v.split("\n").map((x) => x.trim()).filter(Boolean);
+        set(obj, f.k, v);
+        markDirty();
+      });
+    }
+    return wrap;
+  }
+
+  function render() {
+    const root = $("#panels");
+    const openNow = new Set([...root.querySelectorAll("details.panel[open] > summary")].map((s) => s.textContent));
+    const firstRender = !root.children.length;
+    root.innerHTML = "";
+    SCHEMA.forEach((sec, si) => {
+      const d = document.createElement("details");
+      d.className = "panel";
+      if (firstRender ? si === 0 : openNow.has(sec.title)) d.open = true;
+      d.innerHTML = `<summary>${esc(sec.title)}</summary><div class="body"></div>`;
+      const body = $(".body", d);
+      sec.fields.forEach((f) => body.appendChild(fieldEl(f, C, f.k)));
+      if (sec.custom) {
+        const box = document.createElement("div");
+        box.style.display = "grid"; box.style.gap = "12px";
+        body.appendChild(box);
+        ({ photos: photosPanel, video: videoPanel, music: musicPanel, stats: statsPanel, chatcheck: chatPanel })[sec.custom](box, d);
+      }
+      root.appendChild(d);
+    });
+    const danger = document.createElement("details");
+    danger.className = "panel";
+    danger.innerHTML = `<summary>Reset</summary><div class="body"><p class="small muted">Puts all text back to the original draft. Uploaded files stay in storage.</p><div class="btns"><button class="btn danger" type="button">Reset all text to the draft</button></div></div>`;
+    $("button", danger).addEventListener("click", async () => {
+      if (!confirm("Reset all text to the original draft?")) return;
+      await call("/api/admin/content/reset", { method: "POST" });
+      await loadContent();
+    });
+    root.appendChild(danger);
+  }
+
+  // ---------- custom panels ----------
+  function chatPanel(box) {
+    box.innerHTML = `<div class="btns"><button class="btn sm" type="button" id="c-check">Check the chat and refresh step lists</button></div><div class="small" id="c-out"></div>`;
+    const check = () => {
+      const nodes = (C.chat && C.chat.nodes) || [];
+      const ids = nodes.map((n) => n.id).filter(Boolean);
+      const issues = [];
+      const dup = ids.filter((x, i) => ids.indexOf(x) !== i);
+      if (dup.length) issues.push(`Duplicate step IDs: ${[...new Set(dup)].join(", ")}`);
+      nodes.forEach((n, i) => {
+        const name = n.id || `#${i + 1} (no ID)`;
+        if (!n.id) issues.push(`Step #${i + 1} has no ID.`);
+        if (!n.ending && !(n.choices || []).length) issues.push(`${name}: not an ending and has no reply choices, so the chat gets stuck.`);
+        (n.choices || []).forEach((c) => { if (!ids.includes(c.next)) issues.push(`${name}: reply "${c.text}" goes to a step that doesn't exist (${c.next || "empty"}).`); });
+      });
+      if (!ids.includes(C.chat.start)) issues.push("Starting step isn't set to an existing step.");
+      // reachability of a true ending
+      const map = Object.fromEntries(nodes.map((n) => [n.id, n]));
+      const seen = new Set(); const q = [C.chat.start]; let reachTrue = false;
+      while (q.length) { const id = q.shift(); if (seen.has(id) || !map[id]) continue; seen.add(id); if (map[id].ending === "true") reachTrue = true; (map[id].choices || []).forEach((c) => q.push(c.next)); }
+      if (!reachTrue) issues.push("No true ending can be reached from the start, so she can't finish the chat.");
+      const funny = nodes.filter((n) => n.ending === "funny").length;
+      $("#c-out", box).innerHTML = issues.length
+        ? `<p class="status-err">${issues.map(esc).join("<br>")}</p>`
+        : `<p class="status-ok">Looks good: ${nodes.length} steps, ${funny} funny ending${funny === 1 ? "" : "s"}, true ending reachable.</p>`;
+    };
+    $("#c-check", box).addEventListener("click", () => render());
+    check();
+  }
+
+  function photosPanel(box) {
+    const items = () => (C.photos.items = C.photos.items || []);
+    box.innerHTML = `<label class="f">Add photos (resized to 2000px automatically; HEIC works in Safari)
+      <input type="file" accept="image/*" multiple></label><progress value="0" max="1" hidden></progress><div class="thumbs"></div>`;
+    const grid = $(".thumbs", box), prog = $("progress", box);
+    const draw = async () => {
+      grid.innerHTML = "";
+      items().forEach((p, i) => {
+        const el = document.createElement("div");
+        el.className = "thumb";
+        el.innerHTML = `<img alt=""><div class="tb"><input type="text" placeholder="Caption" value="${esc(p.caption || "")}">
+          <div class="btns"><button class="btn sm" data-a="up" type="button">↑</button><button class="btn sm" data-a="down" type="button">↓</button>
+          <button class="btn sm danger" data-a="del" type="button">Delete</button></div></div>`;
+        blobUrl(p.key).then((u) => ($("img", el).src = u)).catch(() => {});
+        $("input", el).addEventListener("input", (e) => { p.caption = e.target.value; markDirty(); });
+        el.querySelectorAll("[data-a]").forEach((b) => b.addEventListener("click", async () => {
+          const arr = items(), a = b.dataset.a;
+          if (a === "up" && i > 0) [arr[i - 1], arr[i]] = [arr[i], arr[i - 1]];
+          if (a === "down" && i < arr.length - 1) [arr[i + 1], arr[i]] = [arr[i], arr[i + 1]];
+          if (a === "del") {
+            if (!confirm("Delete this photo?")) return;
+            arr.splice(i, 1);
+            call(`/api/admin/media/${encodeURIComponent(p.key)}`, { method: "DELETE" }).catch(() => {});
+            await save(true);
+          } else markDirty();
+          draw();
+        }));
+        grid.appendChild(el);
+      });
+    };
+    $("input[type=file]", box).addEventListener("change", async (e) => {
+      const files = [...e.target.files];
+      prog.hidden = false;
+      for (let n = 0; n < files.length; n++) {
+        try {
+          const f = await shrinkImage(files[n]);
+          const r = await upload(f, f.name, (x) => (prog.value = (n + x) / files.length));
+          items().push({ key: r.key, caption: "" });
+        } catch (err) { status(err.message, "status-err"); }
+      }
+      prog.hidden = true; e.target.value = "";
+      await save(true);
+      render();
+    });
+    draw();
+  }
+
+  function videoPanel(box) {
+    box.innerHTML = `<div class="small" id="v-info"></div>
+      <label class="f">Upload video (MP4, under 100 MB; 720p is plenty)<input type="file" accept="video/mp4,video/quicktime,video/*"></label>
+      <progress value="0" max="1" hidden></progress>
+      <div class="btns"><button class="btn" id="v-reset" type="button">Let her watch again (reset)</button></div>`;
+    const info = $("#v-info", box), prog = $("progress", box);
+    const refresh = async () => {
+      try {
+        const s = await call("/api/admin/stats");
+        const v = s.video;
+        const label = { unwatched: "Not watched yet", playing: `Playing now (${Math.ceil(v.remainingSec / 60)} min left in window)`, watched: "Watched" }[v.state];
+        info.innerHTML = `File: ${C.video.key ? esc(C.video.key.split("/").pop()) : "<span class='muted'>none uploaded</span>"} · Status: <span class="pill">${label}</span>
+          ${v.firstPlayAt ? `<br><span class="muted">First played ${fmt(new Date(v.firstPlayAt).toISOString(), "America/Indiana/Indianapolis")} (your time)</span>` : ""}`;
+      } catch {}
+    };
+    $("input[type=file]", box).addEventListener("change", async (e) => {
+      const f = e.target.files[0];
+      if (!f) return;
+      if (f.size > 99 * 1024 * 1024) { status("Video is over 100 MB. Export it smaller (720p) and try again.", "status-err"); return; }
+      prog.hidden = false;
+      try {
+        const r = await upload(f, f.name, (x) => (prog.value = x));
+        const old = C.video.key;
+        C.video.key = r.key;
+        await save(true);
+        if (old) call(`/api/admin/media/${encodeURIComponent(old)}`, { method: "DELETE" }).catch(() => {});
+      } catch (err) { status(err.message, "status-err"); }
+      prog.hidden = true; e.target.value = "";
+      refresh();
+    });
+    $("#v-reset", box).addEventListener("click", async () => {
+      if (!confirm("Reset so the video can be watched once more?")) return;
+      await call("/api/admin/video/reset", { method: "POST" });
+      refresh();
+    });
+    refresh();
+  }
+
+  function musicPanel(box) {
+    box.innerHTML = `<div class="small" id="m-info"></div><audio controls hidden style="width:100%"></audio>
+      <label class="f">Upload song (MP3 or M4A)<input type="file" accept="audio/*"></label><progress value="0" max="1" hidden></progress>
+      <div class="btns"><button class="btn sm danger" id="m-del" type="button">Remove song</button></div>`;
+    const info = $("#m-info", box), audio = $("audio", box), prog = $("progress", box);
+    const draw = () => {
+      info.innerHTML = C.music.key ? `File: ${esc(C.music.key.split("/").pop())}` : "<span class='muted'>No song uploaded. The music button stays hidden until you add one.</span>";
+      $("#m-del", box).hidden = !C.music.key;
+      if (C.music.key) blobUrl(C.music.key).then((u) => { audio.src = u; audio.hidden = false; }).catch(() => {});
+      else audio.hidden = true;
+    };
+    $("input[type=file]", box).addEventListener("change", async (e) => {
+      const f = e.target.files[0];
+      if (!f) return;
+      prog.hidden = false;
+      try {
+        const r = await upload(f, f.name, (x) => (prog.value = x));
+        const old = C.music.key;
+        C.music.key = r.key;
+        await save(true);
+        if (old) call(`/api/admin/media/${encodeURIComponent(old)}`, { method: "DELETE" }).catch(() => {});
+      } catch (err) { status(err.message, "status-err"); }
+      prog.hidden = true; e.target.value = "";
+      draw();
+    });
+    $("#m-del", box).addEventListener("click", async () => {
+      const old = C.music.key;
+      C.music.key = "";
+      await save(true);
+      if (old) call(`/api/admin/media/${encodeURIComponent(old)}`, { method: "DELETE" }).catch(() => {});
+      draw();
+    });
+    draw();
+  }
+
+  function statsPanel(box, details) {
+    box.innerHTML = `<div class="btns"><button class="btn sm" id="s-refresh" type="button">Refresh</button></div>
+      <div><b>Times the site was unlocked</b><div class="log" id="s-unlocks"></div></div>
+      <div><b>Her messages</b><div class="log" id="s-replies"></div></div>
+      <div class="btns"><button class="btn sm danger" id="s-clear" type="button">Delete all messages</button></div>`;
+    const load = async () => {
+      const s = await call("/api/admin/stats");
+      $("#s-unlocks", box).innerHTML = s.unlocks.length
+        ? s.unlocks.map((u) => `<div class="entry small">${fmt(u.t, "Asia/Bangkok")} Thai time · ${fmt(u.t, "America/Indiana/Indianapolis")} your time${u.country ? ` · ${esc(u.country)}` : ""}</div>`).join("")
+        : `<p class="small muted">Not opened yet.</p>`;
+      $("#s-replies", box).innerHTML = s.replies.length
+        ? s.replies.map((r) => `<div class="entry"><div class="small muted">${fmt(r.t, "America/Indiana/Indianapolis")} your time</div>${esc(r.text)}</div>`).join("")
+        : `<p class="small muted">No messages yet.</p>`;
+    };
+    $("#s-refresh", box).addEventListener("click", load);
+    $("#s-clear", box).addEventListener("click", async () => {
+      if (!confirm("Delete all of her messages? This can't be undone.")) return;
+      await call("/api/admin/replies", { method: "DELETE" });
+      load();
+    });
+    details.addEventListener("toggle", () => details.open && load());
+  }
+
+  // ---------- boot ----------
+  async function loadContent() {
+    C = await call("/api/admin/content");
+    render();
+    dirty = false;
+    status("No changes", "");
+  }
+  function showLogin(msg) {
+    $("#app").hidden = true; $("#bar").hidden = true; $("#login").hidden = false;
+    $("#login-err").textContent = msg || "";
+  }
+  $("#login-btn").addEventListener("click", async () => {
+    TOKEN = $("#token").value.trim();
+    try {
+      await loadContent();
+      try { localStorage.setItem("adminToken", TOKEN); } catch {}
+      $("#login").hidden = true; $("#app").hidden = false; $("#bar").hidden = false;
+    } catch (e) { if (e.message !== "unauthorized") $("#login-err").textContent = `Couldn't load: ${e.message}`; }
+  });
+  $("#token").addEventListener("keydown", (e) => e.key === "Enter" && $("#login-btn").click());
+  $("#logout").addEventListener("click", () => { try { localStorage.removeItem("adminToken"); } catch {} TOKEN = ""; showLogin(); });
+  $("#save").addEventListener("click", () => save(false));
+  window.addEventListener("beforeunload", (e) => { if (dirty) { e.preventDefault(); e.returnValue = ""; } });
+
+  (async () => {
+    if (!TOKEN) return showLogin();
+    try {
+      await loadContent();
+      $("#app").hidden = false; $("#bar").hidden = false;
+    } catch (e) { if (e.message !== "unauthorized") showLogin(`Couldn't load: ${e.message}`); }
+  })();
+})();
+</script>
+</body>
+</html>
