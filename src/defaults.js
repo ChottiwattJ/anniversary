@@ -7,7 +7,7 @@ export const DEFAULT_CONTENT = {
 
   gate: {
     title: "สำหรับ จจ",
-    hint: "คำที่ จจ พูดบ่อยที่สุด",
+    hint: "คำที่เช้งน้อยพูดบ่อยที่สุด",
     // Thai vowels and tone marks are ignored when checking, and ช counts as ฉ.
     answers: ["ปังฉึกฉึก"],
   },
@@ -84,10 +84,10 @@ export const DEFAULT_CONTENT = {
           right: "3 ครั้ง ครั้งหน้าเปลี่ยนเป็นที่อเมริกาบ้าง",
         },
         {
-          q: "คำที่ จจ พูดบ่อยที่สุด",
+          q: "คำที่เช้งน้อยพูดบ่อยที่สุด",
           choices: ["ง่วงแล้ว", "ปังฉึกฉึก", "หิวข้าว"],
           answer: 2,
-          right: "ปังฉึกฉึก ได้ยินทีไรก็ยิ้มทุกที",
+          right: "ปังฉึกฉึก เดาถูกด้วย",
         },
       ],
     },
@@ -96,7 +96,7 @@ export const DEFAULT_CONTENT = {
       teaser: "ยังมีอีกอย่าง",
       hint: "ขูดเพื่อดูว่าคืออะไร",
       voice: true,
-      voiceHint: "หรือพูดคำที่ จจ พูดบ่อยที่สุด",
+      voiceHint: "หรือพูดคำที่เช้งน้อยพูดบ่อยที่สุด",
       voicePhrases: ["ปังฉึกฉึก"],
     },
     outro: {
