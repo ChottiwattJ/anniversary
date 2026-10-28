@@ -134,13 +134,7 @@ export const DEFAULT_CONTENT = {
       ],
     },
     letter: { teaser: "มีจดหมายถึง จจ", hint: "แตะซองเพื่อเปิด" },
-    ticket: {
-      teaser: "ยังมีอีกอย่าง",
-      hint: "ขูดเพื่อดูว่าคืออะไร",
-      voice: true,
-      voiceHint: "หรือพูดคำที่เช้งน้อยพูดบ่อยที่สุด",
-      voicePhrases: ["ปังฉึกฉึก"],
-    },
+    ticket: { teaser: "ยังมีอีกอย่าง", hint: "ขูดเพื่อดูว่าคืออะไร" },
     outro: {
       title: "ทั้งหมดนี้เก็บไว้ให้ จจ แล้ว",
       text: "ต่อจากนี้เลื่อนดูได้ทุกอย่าง มีจดหมายที่ยังไม่ได้เปิด กับที่ฝากข้อความถึงเช้งน้อยรออยู่",
@@ -316,7 +310,10 @@ export const DEFAULT_CONTENT = {
     intro: "ครั้งนี้เปลี่ยนให้ จจ เป็นฝ่ายบินมาบ้าง เช้งน้อยกำลังวางแผนทริปไว้ให้แล้ว",
     from: { code: "BKK", city: "กรุงเทพฯ" },
     to: { code: "ORD", city: "ชิคาโก" },
-    dateText: "ยังไม่ประกาศ",
+    passengerLabel: "Passenger Name:",
+    passenger: "Jajaa",
+    dateLabel: "Date:",
+    dateText: "Summer 2027",
     stops: [
       { name: "ชิคาโก", text: "เมืองแรกที่ จจ จะได้เห็น" },
       { name: "Purdue", text: "มาดูว่าเช้งน้อยใช้ชีวิตยังไงที่นี่" },

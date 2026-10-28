@@ -219,10 +219,6 @@ textarea.input { min-height: 120px; resize: vertical; line-height: 1.7; }
 .scratch-wrap { position: relative; border-radius: var(--radius); }
 .scratch { position: absolute; inset: 0; width: 100%; height: 100%; border-radius: var(--radius); touch-action: none; cursor: crosshair; transition: opacity .7s; }
 .scratch.gone { opacity: 0; pointer-events: none; }
-.mic svg { width: 18px; height: 18px; flex: none; }
-.mic { display: inline-flex; align-items: center; gap: 8px; }
-.mic.listening { background: var(--accent-soft); }
-@media (prefers-reduced-motion: no-preference) { .mic.listening svg { animation: breathe 1.2s ease-in-out infinite; } }
 
 /* ---------- full page ---------- */
 .wrap { max-width: 620px; margin: 0 auto; padding-block: 48px 120px; }
@@ -315,7 +311,6 @@ footer { margin-top: 80px; color: var(--muted); font-size: 0.82rem; display: fle
   <symbol id="chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
   <symbol id="back" viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
   <symbol id="plane" viewBox="0 0 24 24"><path d="M3 12h18M15 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></symbol>
-  <symbol id="mic" viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></symbol>
   <symbol id="play" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M10 8.5v7l6-3.5z" fill="currentColor"/></symbol>
   <symbol id="pause" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M9.5 8.5v7M14.5 8.5v7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></symbol>
 </svg>
@@ -734,15 +729,10 @@ footer { margin-top: 80px; color: var(--muted); font-size: 0.82rem; display: fle
     ticket(s, el) {
       const st = (C.story && C.story.ticket) || {};
       const t = C.trip;
-      const voiceOn = st.voice !== false && SpeechRec && (st.voicePhrases || []).length > 0;
       el.innerHTML = `
         <h1 class="big-title">${inline(st.teaser || "")}</h1>
         <p class="muted small" id="sc-hint">${inline(st.hint || "")}</p>
         <div class="scratch-wrap scene-interactive" id="sc-wrap">${ticketHTML(t)}</div>
-        ${voiceOn ? `<div id="sc-voice" style="display:grid;gap:6px">
-          <div class="row"><button class="btn ghost mic" type="button" id="sc-mic"><svg aria-hidden="true"><use href="#mic"/></svg><span>${inline(st.voiceHint || "พูดคำลับ")}</span></button></div>
-          <p class="muted small" id="sc-vnote" aria-live="polite"></p>
-        </div>` : ""}
         <div id="trip-more" hidden style="display:grid;gap:16px">
           <h2>${inline(t.title)}</h2>
           ${t.intro ? `<p>${inline(t.intro)}</p>` : ""}
@@ -757,15 +747,12 @@ footer { margin-top: 80px; color: var(--muted); font-size: 0.82rem; display: fle
           done = true;
           card.reveal();
           $("#sc-hint").hidden = true;
-          const v = $("#sc-voice");
-          if (v) v.hidden = true;
           await wait(700);
           const more = $("#trip-more");
           more.hidden = false;
           stagger(more);
         };
         const card = scratchCard($("#sc-wrap"), reveal);
-        if (voiceOn) wireVoice($("#sc-mic"), $("#sc-vnote"), st.voicePhrases, reveal);
       };
     },
 
@@ -964,71 +951,6 @@ footer { margin-top: 80px; color: var(--muted); font-size: 0.82rem; display: fle
     return { reveal() { cv.classList.add("gone"); setTimeout(() => cv.remove(), 800); } };
   }
 
-  const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition || null;
-
-  function lev(a, b) {
-    const m = a.length, n = b.length;
-    const d = Array.from({ length: m + 1 }, (_, i) => [i, ...Array(n).fill(0)]);
-    for (let j = 1; j <= n; j++) d[0][j] = j;
-    for (let i = 1; i <= m; i++) for (let j = 1; j <= n; j++)
-      d[i][j] = Math.min(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
-    return d[m][n];
-  }
-  function voiceMatch(said, phrases) {
-    const a = skeleton(said);
-    if (!a) return false;
-    return phrases.some((p) => {
-      const b = skeleton(p);
-      if (!b) return false;
-      if (a.includes(b)) return true;
-      const tol = Math.max(1, Math.floor(b.length / 3));
-      for (let i = 0; i + b.length - tol <= a.length; i++) {
-        for (let len = b.length - tol; len <= b.length + tol; len++) {
-          if (i + len <= a.length && lev(a.slice(i, i + len), b) <= tol) return true;
-        }
-      }
-      return lev(a, b) <= tol;
-    });
-  }
-
-  function wireVoice(btn, note, phrases, onMatch) {
-    let fails = 0, busy = false;
-    const noMic = "ใช้ไมค์ไม่ได้ ขูดเอาแทนนะ";
-    btn.addEventListener("click", () => {
-      if (busy) return;
-      let rec;
-      try { rec = new SpeechRec(); } catch { note.textContent = noMic; return; }
-      rec.lang = "th-TH";
-      rec.interimResults = false;
-      rec.maxAlternatives = 5;
-      busy = true;
-      btn.classList.add("listening");
-      note.textContent = "กำลังฟัง...";
-      let heard = false;
-      rec.onresult = (e) => {
-        heard = true;
-        const alts = [...e.results[0]].map((a) => a.transcript);
-        if (alts.some((a) => voiceMatch(a, phrases))) {
-          note.textContent = "ถูกแล้ว";
-          onMatch();
-        } else {
-          fails++;
-          note.textContent = fails >= 2 ? "ไม่เป็นไร ขูดเอาก็ได้นะ" : `ได้ยินว่า "${alts[0] || ""}" ลองอีกทีนะ`;
-        }
-      };
-      rec.onerror = (e) => {
-        heard = true;
-        note.textContent = e.error === "not-allowed" || e.error === "service-not-allowed" ? noMic : "ไม่ได้ยินเลย ลองอีกทีนะ";
-      };
-      rec.onend = () => {
-        busy = false;
-        btn.classList.remove("listening");
-        if (!heard) note.textContent = "ไม่ได้ยินเลย ลองอีกทีนะ";
-      };
-      try { rec.start(); } catch { busy = false; btn.classList.remove("listening"); note.textContent = noMic; }
-    });
-  }
-
   // ---------- shared bits ----------
   function ticketHTML(t) {
     return `<div class="ticket">
@@ -1037,7 +959,7 @@ footer { margin-top: 80px; color: var(--muted); font-size: 0.82rem; display: fle
         <svg class="plane" aria-hidden="true"><use href="#plane"/></svg>
         <div class="to"><div class="code">${esc(t.to.code)}</div><div class="city">${esc(t.to.city)}</div></div>
       </div>
-      <div class="ticket-bottom"><span>ผู้โดยสาร <b>${esc((C.her && C.her.name) || "")}</b></span><span>วันเดินทาง <b>${inline(t.dateText)}</b></span></div>
+      <div class="ticket-bottom"><span>${esc(t.passengerLabel || "Passenger Name:")} <b>${esc(t.passenger || (C.her && C.her.name) || "")}</b></span><span>${esc(t.dateLabel || "Date:")} <b>${inline(t.dateText)}</b></span></div>
     </div>`;
   }
   function stopsHTML(t) {
