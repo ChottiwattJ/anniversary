@@ -420,6 +420,7 @@ progress { width: 100%; }
   // ---------- custom panels ----------
   function chatPanel(box) {
     box.innerHTML = `<div class="btns"><button class="btn sm" type="button" id="c-check">Check the chat and refresh step lists</button></div><div class="small" id="c-out"></div>`;
+    if (!C.chat) C.chat = { show: false, start: "", nodes: [] };
     const check = () => {
       const nodes = (C.chat && C.chat.nodes) || [];
       const ids = nodes.map((n) => n.id).filter(Boolean);
