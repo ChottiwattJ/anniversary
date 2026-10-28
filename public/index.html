@@ -90,6 +90,8 @@ textarea.input { min-height: 120px; resize: vertical; line-height: 1.7; }
 .gate-box { width: 100%; max-width: 360px; display: grid; gap: 22px; }
 .gate-box h1 { font-size: var(--step-2); font-weight: 400; }
 .field { display: grid; gap: 8px; }
+.gate-tip { background: var(--wash); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; display: grid; gap: 10px; }
+.gate-tip p { color: var(--accent-ink); }
 .field label { font-size: 0.92rem; color: var(--muted); }
 
 /* ---------- story stage ---------- */
@@ -325,6 +327,10 @@ footer { margin-top: 80px; color: var(--muted); font-size: 0.82rem; display: fle
     </div>
     <button class="btn" type="submit">เปิด</button>
     <p id="gate-err" class="err" role="alert"></p>
+    <div id="gate-tip" class="gate-tip" hidden aria-live="polite">
+      <p id="gate-tip-text"></p>
+      <button class="btn ghost" type="button" id="gate-fill" hidden>ใส่ให้เลย</button>
+    </div>
   </form>
 </div>
 
@@ -397,9 +403,23 @@ footer { margin-top: 80px; color: var(--muted); font-size: 0.82rem; display: fle
   }
 
   // ---------- gate ----------
-  function showGate(title, hint) {
+  let GATE_HINTS = [];
+  let gateFails = Number(store.get("jj_gate_fails")) || 0;
+  function showGateTip() {
+    const hint = GATE_HINTS.filter((h) => h && gateFails >= Number(h.after || 0)).sort((x, y) => Number(x.after) - Number(y.after)).pop();
+    if (!hint) return;
+    $("#gate-tip").hidden = false;
+    $("#gate-tip-text").textContent = hint.text || "";
+    const fill = $("#gate-fill");
+    fill.hidden = !(hint.fill && hint.answer);
+    fill.onclick = () => { $("#pw").value = hint.answer; $("#pw").focus(); };
+  }
+
+  function showGate(title, hint, hints) {
     if (title) $("#gate-title").textContent = title;
     if (hint) $("#gate-hint").textContent = hint;
+    if (Array.isArray(hints)) GATE_HINTS = hints;
+    showGateTip();
     $("#gate").hidden = false;
     setTimeout(() => $("#pw").focus(), 50);
   }
@@ -418,6 +438,9 @@ footer { margin-top: 80px; color: var(--muted); font-size: 0.82rem; display: fle
       load();
     } catch {
       $("#gate-err").textContent = "ยังไม่ใช่ ลองใหม่นะ";
+      gateFails++;
+      store.set("jj_gate_fails", gateFails);
+      showGateTip();
       const box = $("#gate-form");
       box.classList.remove("shake");
       void box.offsetWidth;
@@ -1246,11 +1269,11 @@ footer { margin-top: 80px; color: var(--muted); font-size: 0.82rem; display: fle
 
   // ---------- start ----------
   (async () => {
-    if (DEMO) return showGate(DEMO.gate.title, DEMO.gate.hint);
+    if (DEMO) return showGate(DEMO.gate.title, DEMO.gate.hint, DEMO.gate.hints);
     try {
       const s = await api("/api/session");
       if (s.unlocked) return load();
-      showGate(s.title, s.hint);
+      showGate(s.title, s.hint, s.hints);
     } catch {
       showGate();
     }

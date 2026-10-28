@@ -10,6 +10,13 @@ export const DEFAULT_CONTENT = {
     hint: "คำที่เช้งน้อยพูดบ่อยที่สุด",
     // Thai vowels and tone marks are ignored when checking, and ช counts as ฉ.
     answers: ["ปังฉึกฉึก"],
+    // Shown after this many wrong tries. fill: true adds a button that types the answer in.
+    hints: [
+      { after: 2, text: "ใบ้ให้: เป็นคำแปลกๆ ที่เช้งน้อยชอบพูด", fill: false },
+      { after: 4, text: "ใบ้อีก: ขึ้นต้นด้วย ปั้ง...", fill: false },
+      { after: 6, text: "ใบ้อีก: ปั้งฉึก...", fill: false },
+      { after: 8, text: "เฉลยเลย: ปั้งฉึกฉึก", fill: true, answer: "ปั้งฉึกฉึก" },
+    ],
   },
 
   // Tap-through story shown before the full page. Order:

@@ -115,6 +115,9 @@ progress { width: 100%; }
     { title: "Password screen", fields: [
       { k: "gate.title", l: "Title" },
       { k: "gate.hint", l: "Hint under the box" },
+      { k: "gate.hints", l: "Hints after wrong tries", t: "list", add: { after: 3, text: "", fill: false, answer: "" },
+        sub: [{ k: "after", l: "Show after this many wrong tries", t: "number" }, { k: "text", l: "Hint text" },
+              { k: "fill", l: "Add a button that types the answer in", t: "bool" }, { k: "answer", l: "Answer the button types in" }] },
       { k: "gate.answers", l: "Accepted answers, one per line (vowels and tone marks are ignored; ช counts as ฉ)", t: "lines" },
     ]},
     { title: "Story mode (tap-through intro)", fields: [

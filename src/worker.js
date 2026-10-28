@@ -27,7 +27,7 @@ async function api(request, env, url) {
   // Public
   if (p === "/api/session" && m === "GET") {
     const content = await getContent(env);
-    return json({ unlocked: await hasSession(request, env), title: content.gate.title, hint: content.gate.hint });
+    return json({ unlocked: await hasSession(request, env), title: content.gate.title, hint: content.gate.hint, hints: content.gate.hints || [] });
   }
   if (p === "/api/unlock" && m === "POST") return unlock(request, env);
 
