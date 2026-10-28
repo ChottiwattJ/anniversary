@@ -332,8 +332,8 @@ footer { margin-top: 80px; color: var(--muted); font-size: 0.82rem; display: fle
   <div class="stage-top">
     <div class="bars" id="bars"></div>
     <div class="stage-nav">
-      <button class="icon-btn" id="st-back" type="button" aria-label="ย้อนกลับ"><svg aria-hidden="true"><use href="#back"/></svg>ย้อน</button>
-      <button class="icon-btn" id="st-skip" type="button">ข้ามไปดูทั้งหมด</button>
+      <button class="icon-btn" id="st-back" type="button" aria-label="Back"><svg aria-hidden="true"><use href="#back"/></svg><span id="st-back-label">Back</span></button>
+      <button class="icon-btn" id="st-skip" type="button">Skip to everything</button>
     </div>
   </div>
   <div class="stage-body"><div class="scene" id="scene"></div></div>
@@ -545,6 +545,8 @@ footer { margin-top: 80px; color: var(--muted); font-size: 0.82rem; display: fle
     $("#stage").hidden = false;
     document.body.style.overflow = "hidden";
     $("#bars").innerHTML = SC.map(() => "<span></span>").join("");
+    $("#st-back-label").textContent = L().back || "Back";
+    $("#st-skip").textContent = L().skip || "Skip to everything";
     showScene();
   }
 

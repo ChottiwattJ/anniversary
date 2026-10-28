@@ -158,6 +158,8 @@ export const DEFAULT_CONTENT = {
     dateLang: "en",
     replayChat: "Play the chat again",
     replayStory: "Watch our story again",
+    back: "Back",
+    skip: "Skip to everything",
   },
 
   // Set as YYYY-MM-DD to show "together N days". Leave empty to hide.
