@@ -146,6 +146,7 @@ function referencedKeys(c) {
   for (const ph of (c.photos && c.photos.items) || []) if (ph && ph.key) keys.push(ph.key);
   for (const it of (c.timeline && c.timeline.items) || []) if (it && it.photo) keys.push(it.photo);
   for (const it of (c.story && c.story.photoZoom && c.story.photoZoom.items) || []) if (it && it.photo) keys.push(it.photo);
+  for (const it of (c.story && c.story.extraPages) || []) if (it && it.photo) keys.push(it.photo);
   if (c.music && c.music.key) keys.push(c.music.key);
   return keys;
 }

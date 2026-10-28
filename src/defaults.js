@@ -24,10 +24,52 @@ export const DEFAULT_CONTENT = {
     },
     distance: { title: "ตอนนี้เราอยู่กันคนละซีกโลก" },
 
+    // Intro page shown right before each game. Set show: false to skip one.
+    intros: {
+      chat: {
+        show: true,
+        eyebrow: "บทแรก",
+        title: "ย้อนกลับไปตอนนั้น",
+        text: "หน้าต่อไปเป็นแชทจำลอง ตอนที่เช้งน้อยเพิ่งกลับมาทัก จจ อีกครั้ง\n\nเช้งน้อยจะพิมพ์มาเอง จจ แค่แตะเลือกคำตอบที่อยู่ด้านล่าง\n\nบางคำตอบจะพาไปฉากจบแบบอื่น กดลองใหม่ได้เรื่อยๆ จนกว่าจะเจอฉากจบจริง",
+        button: "เริ่มแชท",
+      },
+      thisOrThat: {
+        show: true,
+        eyebrow: "เกม",
+        title: "แบบไหนดี",
+        text: "จะมีให้เลือกทีละสองอย่าง แตะอันที่ จจ ชอบมากกว่า\n\nจบแล้วมาดูกันว่าตรงกับที่เช้งน้อยเลือกไว้กี่ข้อ",
+        button: "เริ่มเลย",
+      },
+      photoZoom: {
+        show: true,
+        eyebrow: "เกม",
+        title: "ที่ไหนเอ่ย",
+        text: "รูปจะเริ่มจากซูมเข้าไปใกล้มาก ลองทายว่าเป็นรูปจากที่ไหน\n\nตอบผิด รูปจะค่อยๆ ซูมออกให้เห็นมากขึ้น",
+        button: "เริ่มเลย",
+      },
+      twoTruths: {
+        show: true,
+        eyebrow: "เกม",
+        title: "จริงสอง โกหกหนึ่ง",
+        text: "แต่ละรอบมีเรื่องจริงสองเรื่อง กับเรื่องโกหกหนึ่งเรื่อง\n\nแตะข้อที่คิดว่าเป็นเรื่องโกหก",
+        button: "เริ่มเลย",
+      },
+      quiz: {
+        show: true,
+        eyebrow: "เกม",
+        title: "ทดสอบความจำ",
+        text: "คำถามสั้นๆ เกี่ยวกับเรา\n\nตอบผิดได้ ลองใหม่จนกว่าจะถูก",
+        button: "เริ่มเลย",
+      },
+    },
+
+    // Extra pages you add yourself. at = where it goes:
+    // start, chat, timeline, distance, thisOrThat, photoZoom, twoTruths, quiz, letter, ticket (= after that part)
+    extraPages: [],
+
     thisOrThat: {
       show: true,
       title: "แบบไหนดี",
-      intro: "เลือกแบบที่ จจ ชอบ แล้วมาดูกันว่าตรงกับเช้งน้อยกี่ข้อ",
       // mine: your own pick, 1 = left, 2 = right
       items: [
         { a: "หมูกระทะ", b: "ชาบู", mine: 1 },

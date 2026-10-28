@@ -127,7 +127,7 @@ textarea.input { min-height: 120px; resize: vertical; line-height: 1.7; }
 .dist path { stroke-dasharray: 80; stroke-dashoffset: 0; }
 @media (prefers-reduced-motion: no-preference) { .dist path { animation: draw 1.6s .4s ease both; } @keyframes draw { from { stroke-dashoffset: 80 } } }
 .facts { font-size: 0.95rem; color: var(--muted); }
-.status-line { font-size: 1rem; }
+.intro-text { display: grid; gap: .8em; }
 
 /* quiz */
 .choices { display: grid; gap: 10px; }
@@ -479,29 +479,72 @@ footer { margin-top: 80px; color: var(--muted); font-size: 0.82rem; display: fle
 
   function buildScenes() {
     const st = C.story || {};
+    const intros = st.intros || {};
+    const extras = (st.extraPages || []).filter((p) => p && (p.title || p.text || p.photo));
     const out = [{ t: "intro", i: true }];
-    if (C.chat && C.chat.show !== false && (C.chat.nodes || []).length) out.push({ t: "chat", i: true, full: true });
+    const extraAt = (at) => extras.filter((p) => (p.at || "start") === at).forEach((p) => out.push({ t: "extra", p }));
+    const introFor = (key) => {
+      const it = intros[key];
+      if (it && it.show !== false && (it.title || it.text)) out.push({ t: "gameIntro", it, i: true });
+    };
+    extraAt("start");
+
+    if (C.chat && C.chat.show !== false && (C.chat.nodes || []).length) {
+      introFor("chat");
+      out.push({ t: "chat", i: true, full: true });
+    }
+    extraAt("chat");
+
     if (C.timeline && C.timeline.show !== false) (C.timeline.items || []).forEach((it, k, a) => out.push({ t: "moment", it, k, n: a.length }));
+    extraAt("timeline");
+
     if (C.clocks && C.clocks.show !== false) out.push({ t: "distance" });
+    extraAt("distance");
+
     const tot = st.thisOrThat;
-    if (tot && tot.show !== false && (tot.items || []).length) out.push({ t: "tot", i: true });
+    if (tot && tot.show !== false && (tot.items || []).length) {
+      introFor("thisOrThat");
+      out.push({ t: "tot", i: true });
+    }
+    extraAt("thisOrThat");
+
     const pz = st.photoZoom;
-    if (pz && pz.show !== false) (pz.items || []).filter((x) => x.photo).forEach((q, k, a) => out.push({ t: "zoom", q, k, n: a.length, i: true }));
+    const pzItems = pz && pz.show !== false ? (pz.items || []).filter((x) => x.photo) : [];
+    if (pzItems.length) {
+      introFor("photoZoom");
+      pzItems.forEach((q, k, a) => out.push({ t: "zoom", q, k, n: a.length, i: true }));
+    }
+    extraAt("photoZoom");
+
     const tt = st.twoTruths;
-    if (tt && tt.show !== false) (tt.items || []).forEach((x, k, a) => out.push({
-      t: "quiz", k, n: a.length, i: true, label: tt.title, wrong: "อันนี้เรื่องจริงนะ ลองอีกที",
-      q: { q: tt.question || "ข้อไหนโกหก", choices: x.statements, answer: x.lie, right: x.reveal },
-    }));
-    if (st.quiz && st.quiz.show !== false) (st.quiz.items || []).forEach((q, k, a) => out.push({ t: "quiz", q, k, n: a.length, i: true, label: st.quiz.title }));
+    if (tt && tt.show !== false && (tt.items || []).length) {
+      introFor("twoTruths");
+      tt.items.forEach((x, k, a) => out.push({
+        t: "quiz", k, n: a.length, i: true, label: tt.title, wrong: "อันนี้เรื่องจริงนะ ลองอีกที",
+        q: { q: tt.question || "ข้อไหนโกหก", choices: x.statements, answer: x.lie, right: x.reveal },
+      }));
+    }
+    extraAt("twoTruths");
+
+    if (st.quiz && st.quiz.show !== false && (st.quiz.items || []).length) {
+      introFor("quiz");
+      st.quiz.items.forEach((q, k, a) => out.push({ t: "quiz", q, k, n: a.length, i: true, label: st.quiz.title }));
+    }
+    extraAt("quiz");
+
     if (C.letter && C.letter.show !== false) out.push({ t: "letter", i: true });
+    extraAt("letter");
+
     if (C.trip && C.trip.show !== false) out.push({ t: "ticket", i: true });
+    extraAt("ticket");
+
     out.push({ t: "outro", i: true });
     return out;
   }
 
   function startStory(onlyChat) {
     SC = buildScenes();
-    if (onlyChat) SC = SC.filter((s) => s.t === "chat").concat([{ t: "back-to-page", i: true }]);
+    if (onlyChat) SC = SC.filter((s, k, all) => s.t === "chat" || (all[k + 1] && all[k + 1].t === "chat" && s.t === "gameIntro")).concat([{ t: "back-to-page", i: true }]);
     cur = 0;
     $("#site").hidden = true;
     $("#stage").hidden = false;
@@ -590,7 +633,7 @@ footer { margin-top: 80px; color: var(--muted); font-size: 0.82rem; display: fle
           <div class="r"><div class="place">${esc(C.clocks.thereLabel)}</div><div class="time">${t.hm}</div></div>
         </div>
         <p class="facts">ห่างกัน ${Number(C.clocks.distanceKm || 0).toLocaleString("th-TH")} กิโลเมตร · เวลาต่างกัน ${hoursApart()} ชั่วโมง</p>
-        <p class="status-line">${inline(statusNow())}</p>`;
+`;
     },
 
     quiz(s, el) {
@@ -632,7 +675,6 @@ footer { margin-top: 80px; color: var(--muted); font-size: 0.82rem; display: fle
         const it = items[i];
         el.innerHTML = `
           <p class="chapter">${esc(g.title || "")} · ${i + 1}/${items.length}</p>
-          ${g.intro ? `<p class="lead">${inline(g.intro)}</p>` : ""}
           <div class="tot">
             <button class="opt" type="button" data-v="1">${inline(it.a)}</button>
             <span class="or">หรือ</span>
@@ -725,6 +767,26 @@ footer { margin-top: 80px; color: var(--muted); font-size: 0.82rem; display: fle
         const card = scratchCard($("#sc-wrap"), reveal);
         if (voiceOn) wireVoice($("#sc-mic"), $("#sc-vnote"), st.voicePhrases, reveal);
       };
+    },
+
+    gameIntro(s, el) {
+      const it = s.it;
+      el.innerHTML = `
+        ${it.eyebrow ? `<p class="chapter">${inline(it.eyebrow)}</p>` : ""}
+        <h1 class="big-title">${inline(it.title || "")}</h1>
+        ${it.text ? `<div class="lead intro-text">${paras(it.text)}</div>` : ""}
+        <div class="row">${nextBtn(it.button || "เริ่มเลย")}</div>`;
+      wireNext(el);
+    },
+
+    extra(s, el) {
+      const p = s.p;
+      const photo = p.photo && !DEMO ? `<img class="moment-photo" src="${media(p.photo)}" alt="">` : "";
+      el.innerHTML = `
+        ${p.eyebrow ? `<p class="eyebrow">${inline(p.eyebrow)}</p>` : ""}
+        ${p.title ? `<h1 class="big-title">${inline(p.title)}</h1>` : ""}
+        ${p.text ? `<div class="lead intro-text">${paras(p.text)}</div>` : ""}
+        ${photo}`;
     },
 
     outro(s, el) {
